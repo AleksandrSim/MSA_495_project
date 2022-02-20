@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from main import *
 
 
 def argumentParser():
@@ -14,3 +14,6 @@ def argumentParser():
 
 dataset = argumentParser()
 path = dataset.input
+
+
+pd.read_csv('imageName_age.csv')
