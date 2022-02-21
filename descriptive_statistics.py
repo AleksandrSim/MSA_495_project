@@ -46,14 +46,25 @@ def generate_class_and_plot(df):
     return df
 
 
+def break_names(df):
+    df = group_age_decades()
+    df = generate_class_and_plot(df)
+    df['name'] = df['image_name'].str.split('_').str[1] +'_' + df['image_name'].str.split('_').str[2]
+    return df
+
 
 df = group_age_decades()
+df =  generate_of_age_distribution(df)
 df = generate_class_and_plot(df)
+df =  break_names(df)
 
-image_name = df['image_name']
 
-image_name = image_name.str.split('_')
+#name_and_count
+name_count =df.groupby(['name']).count().reset_index()
 
+name_count = name_count[['name','age']]
+
+name_count.columns =['name', 'count']
 
 
 
