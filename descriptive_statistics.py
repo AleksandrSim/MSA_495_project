@@ -47,3 +47,14 @@ def generate_class_and_plot(df):
 
 
 
+df = group_age_decades()
+df = generate_class_and_plot(df)
+
+image_name = df['image_name']
+
+image_name = image_name.str.split('_')
+
+
+
+
+
