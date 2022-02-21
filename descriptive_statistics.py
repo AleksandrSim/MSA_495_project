@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from main import *
 import seaborn as sns
 sns.set()
-sns.set(rc={'figure.figsize':(29.7,25.27)})
+sns.set(rc={'figure.figsize':(29.7,20.27)})
 
 sns.set(font_scale = 1.9)
 
@@ -55,17 +55,23 @@ def break_names(df):
     return df
 
 
+
+
+def most_occuring_actors(df):
+    name_count = df.groupby(['name']).count().reset_index()
+
+    name_count = name_count[['name', 'age']]
+    name_count.columns = ['name', 'count']
+
+    sns.barplot(x='name', y='count', data=name_count[name_count['count'] > 130])
+    plt.show()
+    print('-------->mean' + " "+ str(name_count['count'].mean()))
+    print('-------->median'+ " "+ str(name_count['count'].median()))
+
+
 df = group_age_decades()
 df =  generate_of_age_distribution(df)
 df = generate_class_and_plot(df)
 df =  break_names(df)
+df =  most_occuring_actors(df)
 
-
-#name_and_count
-name_count =df.groupby(['name']).count().reset_index()
-
-name_count = name_count[['name','age']]
-
-name_count.columns =['name', 'count']
-sns.barplot(x= 'name', y= 'count' ,data= name_count[name_count['count'] >130])
-plt.show()
