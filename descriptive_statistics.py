@@ -41,7 +41,7 @@ def generate_class_and_plot(df):
     df =  group_age_decades()
     df['old_young'] =  [1 if int(i) > 50 else 0 for i in list(df['age']) ]
     old_young = list(df['old_young'])
-    sns.countplot(x= df['old_young'])  #  LOST YOU Are you here ?? :D :D # We need to delete the comments later or we will be fuckedu up
+    sns.countplot(x= df['old_young'])
     plt.show()
     return df
 
