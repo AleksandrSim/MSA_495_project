@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 from main import *
 import seaborn as sns
 sns.set()
+sns.set(rc={'figure.figsize':(29.7,25.27)})
 
+sns.set(font_scale = 1.9)
 
 def argumentParser():
     parser = argparse.ArgumentParser(
@@ -65,7 +67,5 @@ name_count =df.groupby(['name']).count().reset_index()
 name_count = name_count[['name','age']]
 
 name_count.columns =['name', 'count']
-
-
-
-
+sns.barplot(x= 'name', y= 'count' ,data= name_count[name_count['count'] >130])
+plt.show()
