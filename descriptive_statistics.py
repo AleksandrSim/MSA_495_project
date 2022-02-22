@@ -30,7 +30,7 @@ def group_age_decades(path='files/imageName_age.csv'):
 
 
 def generate_of_age_distribution(df):
-    df = group_age_decades(path='imageName_age.csv')
+    df = group_age_decades(path='files/imageName_age.csv')
     data_by_age_decade = df.groupby(['decades']).count().reset_index() # We will need this later
     decades = df['decades']
     counts = df['age']
