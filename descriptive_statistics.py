@@ -39,12 +39,14 @@ def generate_of_age_distribution(df):
 
 
 
-def generate_class_and_plot(df):
+def generate_class_and_plot(df, write_csv= False):
     df =  group_age_decades()
     df['old_young'] =  [1 if int(i) > 50 else 0 for i in list(df['age']) ]
     old_young = list(df['old_young'])
     sns.countplot(x= df['old_young'])
     plt.show()
+    if write_csv == True:
+        df.to_csv('files/binary_class_data.csv')
     return df
 
 
@@ -71,7 +73,7 @@ def most_occuring_actors(df):
 if __name__ =='__main__':
     df = group_age_decades()
     df =  generate_of_age_distribution(df)
-    df = generate_class_and_plot(df)
+    df = generate_class_and_plot(df, write_csv= True)
     df =  break_names(df)
     df =  most_occuring_actors(df)
 
