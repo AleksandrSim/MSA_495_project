@@ -21,7 +21,7 @@ path = dataset.input
 
 
 
-def group_age_decades(path='imageName_age.csv'):
+def group_age_decades(path='files/imageName_age.csv'):
     df = pd.read_csv(path)
     lis_age = list(df['age'])
     decades = [(int(str(i)[0]) *10+5) for i in lis_age]
