@@ -21,7 +21,6 @@ class GenerateInitialFeatures:#path of the original celebrity celebrity document
 
 
 
-if  __name__=='__main__':
     instance = GenerateInitialFeatures()
     instance.generate_csv()
 
