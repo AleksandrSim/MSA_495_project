@@ -1,4 +1,5 @@
-#from mtcnn.mtcnn import MTCNN
+#from mtcnn.mtcnn import MTCNN\
+'''
 import os
 import cv2
 from tqdm import tqdm
@@ -59,3 +60,4 @@ for filename in tqdm(os.listdir(image_root_dir)):
     warped = cv2.warpAffine(npimage, M, (imgSize[1], imgSize[0]), borderValue=0.0)
     warped=cv2.resize(warped,(400,400))
     Image.fromarray(warped.astype(np.uint8)).save(storepath)
+'''
