@@ -1,6 +1,6 @@
 import mat73
 import pandas as pd
-from scripts.features_from_data import GenerateInitialFeatures
+from features_from_data import *
 
 
 class GenerateInitialFeatures:  # path of the original celebrity celebrity document. "NOTE" I read from local, cause it is too huge to uplaod to github
