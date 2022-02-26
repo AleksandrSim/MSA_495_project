@@ -6,7 +6,7 @@ from dataloader import BinaryClass
 from model import Simple, Medium, AgeAlexNet
 from torch.utils.data import DataLoader
 import numpy as np
-
+import torchvision
 if __name__ == '__main__':
     path_main = os.path.split(os.getcwd())[0]
     df = pd.read_csv(path_main + '/files/train.txt', sep=' ', header=None)
@@ -17,14 +17,20 @@ if __name__ == '__main__':
     path_to_images = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'  # make this dinamic and change the path
     # net = Simple()
     # net = Simple()
-    #  net =  AgeAlexNet(pretrainded=False)
-    net = Simple()
+    net =  AgeAlexNet(pretrained=False)
+    model_conv = torchvision.models.resnet18(pretrained=True)
+    num_ftrs = model_conv.fc.in_features
+    net = model_conv
+    for param in model_conv.parameters():
+        param.requires_grad = False
+    model_conv.fc = nn.Linear(num_ftrs, 5)
+
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(net.parameters(), lr=0.01)
+    optimizer = torch.optim.Adam(net.parameters(), lr=0.005)
     dataset = BinaryClass(df, path_to_images)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
     overall_loss = []
-    for epoch in range(100):
+    for epoch in range(10):
         running_loss = 0.0
 
         for i, k in enumerate(dataset):
@@ -36,10 +42,10 @@ if __name__ == '__main__':
             optimizer.step()
 
             running_loss += loss.item()
-            if i % 100 == 99:
+            if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
-                torch.save(net.state_dict(), path_main + '/binary_classification/models/medium' + str(i) + '.pt')
+                torch.save(net.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/resnet' + str(i) + '.pt')
                 print('fin')
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
 
