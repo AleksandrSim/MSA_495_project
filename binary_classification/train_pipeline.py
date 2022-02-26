@@ -11,6 +11,7 @@ import torchvision
 from sklearn.model_selection import train_test_split
 
 if __name__ == '__main__':
+    original_images_path = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
     path_main = os.path.split(os.getcwd())[0]
     df = pd.read_csv(path_main + '/files/train.txt', sep=' ', header=None)
     df.columns = ['name', 'class']
@@ -35,13 +36,19 @@ if __name__ == '__main__':
     # print(df_filtered)  # make this dinamic and change the path
     # net = Simple()
     # net = Simple()
-    net = AgeAlexNet(pretrained=False)
-    model_conv = torchvision.models.resnet18(pretrained=True)
-    num_ftrs = model_conv.fc.in_features
-    net = model_conv
+    model_conv = torchvision.models.vgg16_bn(pretrained=True)
+    #num_ftrs = model_conv.classifier.
     for param in model_conv.parameters():
         param.requires_grad = False
-    model_conv.fc = nn.Linear(num_ftrs, 3)
+    model_conv.classifier = nn.Sequential(
+            nn.Linear(25088 , 512),
+            nn.BatchNorm1d(512),
+            nn.Dropout(0.2),
+            nn.Linear(512 , 256),
+            nn.Linear(256 , 3)
+        )
+    net = model_conv
+
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
@@ -66,7 +73,7 @@ if __name__ == '__main__':
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
-                torch.save(net.state_dict(), class_model_path + str(i) + '.pt')
+                torch.save(net.state_dict(), class_model_path_Alex + str(i) + '.pt')
                 print('fin')
 
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')

@@ -1,4 +1,8 @@
 # Google Drive Links for Dataset Downloads
+
+
+class_model_path_Alex = "/Users/aleksandrsimonyan/Desktop/models/"
+
 mat_dataset_id = "1l5znSBjFJxzpkBi6P7LewNruVzV7gKbW"
 images_dataset_id = "1hYIZadxcPG27Fo7mQln0Ey7uqw1DoBvM"
 
@@ -9,7 +13,7 @@ original_images_path = "/Users/dimitriosmavrofridis/Downloads/CACD2000/"
 clean_images_path = "/Users/dimitriosmavrofridis/Downloads/output/cross_age_dataset_cleaned_and_resized/"
 excluded_images_path = "/Users/dimitriosmavrofridis/Downloads/output/cross_age_dataset_excluded_images/"
 blurry_images_path = "/Users/dimitriosmavrofridis/Downloads/output/cross_age_dataset_blurry_images/"
-class_model_path = "/Users/dimitriosmavrofridis/Downloads/models/resnet_3_class_model"
+class_model_path_Dim = "/Users/dimitriosmavrofridis/Downloads/models/resnet_3_class_model"
 
 image_dimensions = (400, 400)
 
