@@ -22,7 +22,7 @@ net.load_state_dict(states)
 print(net)
 
 
-classes = [0, 1, 2,3,4]
+classes = [0, 1, 2]
 correct_pred = {classname: 0 for classname in classes}
 total_pred = {classname: 0 for classname in classes}
 
