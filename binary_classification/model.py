@@ -91,7 +91,7 @@ class AgeAlexNet(nn.Module):
             nn.Linear(4096, 4096),
             nn.ReLU(inplace=True),
             nn.Linear(4096, 5),
-        )
+            nn.LogSoftmax(dim=1))
         if pretrained is True:
             self.load_pretrained_params(modelpath)
 
@@ -117,4 +117,5 @@ class AgeAlexNet(nn.Module):
         self.pool5_feature=pool5_feature
         flattened = pool5_feature.view(pool5_feature.size(0), -1)
         age_logit = self.age_classifier(flattened)
+
         return age_logit
