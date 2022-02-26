@@ -2,6 +2,7 @@ mat73~=0.58
 numpy~=1.21.2
 pandas~=1.4.1
 matplotlib~=3.5.0
+opencv-python~=4.5.5
 tqdm~=4.62.3
 pillow~=8.4.0
 gdown~=4.3.1

@@ -6,4 +6,4 @@ mat_dataset_path = "./downloaded_files/celebrity2000.mat"
 imageName_age_csv_path = "./results/imageName_age.csv"
 
 original_images_path = "/Users/dimitriosmavrofridis/Downloads/CACD2000"
-clean_images_output_path = ""
+clean_images_output_path = "/Users/dimitriosmavrofridis/Downloads/cross_age_dataset_cleaned_and_resized"
