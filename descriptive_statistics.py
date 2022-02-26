@@ -46,7 +46,7 @@ def generate_class_and_plot(df, write_csv=False):
     old_young = list(df['old_young'])
     sns.countplot(x=df['old_young'])
     plt.show()
-    if write_csv == True:
+    if write_csv:
         df.to_csv('files/binary_class_data.csv')
     return df
 

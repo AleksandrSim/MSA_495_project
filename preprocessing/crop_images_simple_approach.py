@@ -63,8 +63,8 @@ if __name__ == '__main__':
 
     path_main = os.path.split(os.getcwd())[0]
 
-    generate_dir_if_not_exists(clean_images_output_path)
-    generate_dir_if_not_exists(excluded_images_output_path)
+    generate_dir_if_not_exists(clean_images_path)
+    generate_dir_if_not_exists(excluded_images_path)
 
     df = pd.read_csv(path_main + '/files/cleaned_images.csv')
 
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         print(f"\rImages processed -> {counter} and blurry images removed -> {exclusion_counter}", end='')
         sys.stdout.flush()
         counter += 1
-        image = cv2.imread(original_images_path + "/" + df['name'][i])
+        image = cv2.imread(original_images_path + df['name'][i])
 
         try:
             # Converting the image into grayscale
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             # then the image should be considered "blurry"
             if fm < images_blur_threshold:
                 exclusion_counter += 1
-                cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
+                cv2.imwrite(excluded_images_path + df['name'][i], image)
                 continue
 
             faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -96,11 +96,11 @@ if __name__ == '__main__':
 
             if len(faces) == 0:
                 exclusion_counter += 1
-                cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
+                cv2.imwrite(excluded_images_path + df['name'][i], image)
                 continue
 
             for (x, y, w, h) in faces:
-                #cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 3)
+                # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 3)
                 # Creating two regions of interest
                 roi_gray = gray[y:(y + h), x:(x + w)]
                 roi_color = image[y:(y + h), x:(x + w)]
@@ -110,11 +110,10 @@ if __name__ == '__main__':
 
             if len(eyes) == 0:
                 exclusion_counter += 1
-                cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
+                cv2.imwrite(excluded_images_path + df['name'][i], image)
                 continue
 
-
-            cv2.imwrite(clean_images_output_path + "/" + df['name'][i], image)
+            cv2.imwrite(clean_images_path + df['name'][i], image)
 
             '''
                 
@@ -187,8 +186,7 @@ if __name__ == '__main__':
 
         except:
             exclusion_counter += 1
-            cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
-
+            cv2.imwrite(excluded_images_path + df['name'][i], image)
 
 '''
         for (x, y, w, h) in faces:
