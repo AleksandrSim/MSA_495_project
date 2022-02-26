@@ -44,7 +44,7 @@ if __name__ == '__main__':
     model_conv.fc = nn.Linear(num_ftrs, 3)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(net.parameters(), lr=0.005)
+    optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
     dataset = BinaryClass(train, original_images_path)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
     val_dataset = BinaryClass(valid, original_images_path)
