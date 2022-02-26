@@ -70,12 +70,13 @@ if __name__ == '__main__':
 
     df = df[['name', 'class']]
     counter = 0
-    invalid_counter = 0
+    exclusion_counter = 0
     for i in range(len(df)):
-        print(f"\rImages processed -> {counter} and invalid images removed -> {invalid_counter}", end='')
+        print(f"\rImages processed -> {counter} and blurry images removed -> {exclusion_counter}", end='')
         sys.stdout.flush()
         counter += 1
         image = cv2.imread(original_images_path + "/" + df['name'][i])
+
         try:
             # Converting the image into grayscale
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -83,7 +84,8 @@ if __name__ == '__main__':
             # if the focus measure is less than the supplied threshold,
             # then the image should be considered "blurry"
             if fm < images_blur_threshold:
-                invalid_counter += 1
+                exclusion_counter += 1
+                cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
                 continue
 
             faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
@@ -93,6 +95,8 @@ if __name__ == '__main__':
             faces = faceCascade.detectMultiScale(gray, 1.1, 4)
 
             if len(faces) == 0:
+                exclusion_counter += 1
+                cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
                 continue
 
             for (x, y, w, h) in faces:
@@ -105,10 +109,16 @@ if __name__ == '__main__':
             eyes = eye_cascade.detectMultiScale(roi_gray, 1.1, 4)
 
             if len(eyes) == 0:
+                exclusion_counter += 1
+                cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
                 continue
 
 
+            cv2.imwrite(clean_images_output_path + "/" + df['name'][i], image)
+
             '''
+                
+        
             index = 0
             # Creating for loop in order to divide one eye from another
             for (ex, ey, ew, eh) in eyes:
@@ -172,10 +182,20 @@ if __name__ == '__main__':
             # Applying the rotation to our image using the
             # cv2.warpAffine method
             #rotated = cv2.warpAffine(image, M, (w, h))
+            
             '''
 
-            cv2.imwrite(clean_images_output_path + "/" + df['name'][i], image)
-
         except:
-            invalid_counter += 1
+            exclusion_counter += 1
             cv2.imwrite(excluded_images_output_path + "/" + df['name'][i], image)
+
+
+'''
+        for (x, y, w, h) in faces:
+            # cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            faces = image[y:y + h, x:x + w]
+            warped = cv2.resize(faces, (400, 400))
+            cv2.imwrite(clean_images_output_path + "/" + df['name'][i], faces)
+
+        Image.fromarray(faces.astype(np.uint8)).save(clean_images_output_path + "/" + df['name'][i])
+'''
