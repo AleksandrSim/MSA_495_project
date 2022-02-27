@@ -35,7 +35,6 @@ def detectFace(img):
         face_x, face_y, face_w, face_h = face
         img = img[int(face_y):int(face_y + face_h), int(face_x):int(face_x + face_w)]
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
         return img, img_gray
     else:
         # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -158,6 +157,7 @@ if __name__ == '__main__':
     for i in range(len(df)):
 
         image = cv2.imread(original_images_path + df['name'][i])
+        '''
         fm = variance_of_laplacian(image)
         # if the focus measure is less than the supplied threshold,
         # then the image should be considered "blurry"
@@ -165,21 +165,27 @@ if __name__ == '__main__':
             exclusion_counter += 1
             cv2.imwrite(blurry_images_path + df['name'][i], image)
             continue
+        '''
 
         face_detector = cv2.CascadeClassifier(face_detector_path)
         eye_detector = cv2.CascadeClassifier(eye_detector_path)
         nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
-        try:
-            alignedFace = alignFace(image)
-            # plt.imshow(alignedFace[:, :, ::-1])
-            # plt.show()
-            img, gray_img = detectFace(alignedFace)
-            # plt.imshow(img[:, :, ::-1])
-            # plt.show()
+        '''
+        alignedFace = alignFace(image)
+        # plt.imshow(alignedFace[:, :, ::-1])
+        # plt.show()
+        img, gray_img = detectFace(alignedFace)
+        # plt.imshow(img[:, :, ::-1])
+        # plt.show()
+        '''
+
+        img, gray_img = detectFace(image)
+
+        if img is not None:
             img = cv2.resize(img, image_dimensions)
             cv2.imwrite(clean_images_path + df['name'][i], img)
-        except:
+        else:
             exclusion_counter += 1
             cv2.imwrite(excluded_images_path + df['name'][i], image)
             continue
