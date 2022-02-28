@@ -10,10 +10,7 @@ def load_data(path):
 
     return data_dict
 
-def pca_plots(data_dict):
-    features = data_dict['celebrityImageData']['feature']
-    df = pd.DataFrame(features)
-
+def pca_plots(df):
     pca = PCA()
     pca.fit(df)
 
@@ -38,5 +35,9 @@ def pca_plots(data_dict):
     return None
 
 if  __name__=='__main__':
-    path = 'project_data/celebrity2000.mat'
+    path = '../project_data/celebrity2000.mat'
     data_dict = load_data(path)
+    features = data_dict['celebrityImageData']['feature']
+    feature_df = pd.DataFrame(features)
+    pca_plots(feature_df)
+
