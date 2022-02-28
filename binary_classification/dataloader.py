@@ -29,3 +29,6 @@ class BinaryClass(Dataset):
         transforms.ToTensor()]),
         "valid": transforms.Compose([transforms.ToTensor()])}
 
+if __name__ == '__main__':
+    print('hey')
+
