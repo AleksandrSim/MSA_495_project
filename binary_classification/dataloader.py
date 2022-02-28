@@ -16,24 +16,28 @@ class BinaryClass(Dataset):
         self.path_to_images = path_to_images
         self.train = train
 
+        # transform = {"train": transforms.Compose([
+        #     transforms.RandomResizedCrop(224),
+        #     transforms.RandomHorizontalFlip(),
+        #     transforms.ToTensor()]),
+        #     "valid": transforms.Compose([transforms.ToTensor()])}
+        #
+        # self.transform = transform
+
     def __len__(self):
         return len(self.dataset)
 
     def __getitem__(self, index):
-        y = torch.tensor(int(self.dataset['class'][index])).long()
+        y = torch.tensor(int(self.dataset['class'].iloc[index])).long()
 
         X = Image.open(self.path_to_images + self.dataset['name'][index])
-        if self.train == True:
-            X = self.transform["train"](X)
-        else:
-            X = self.transform["valid"](X)
-        return X, y
 
-    transform = {"train": transforms.Compose([
-        transforms.RandomResizedCrop(224),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor()]),
-        "valid": transforms.Compose([transforms.ToTensor()])}
+        # if self.train == True:
+        #     X = self.transform["train"](X)
+        # else:
+        #     X = self.transform["valid"](X)
+
+        return X, y
 
 if __name__ == '__main__':
 
