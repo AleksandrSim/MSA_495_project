@@ -15,7 +15,7 @@ imageName_age_csv_path = "./results/imageName_age.csv"
 # blurry_images_path = "/Users/dimitriosmavrofridis/Downloads/output/cross_age_dataset_blurry_images/"
 # class_model_path_Dim = "/Users/dimitriosmavrofridis/Downloads/models/resnet_3_class_model"
 
-original_images_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/CACD2000"
+original_images_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/CACD2000/"
 clean_images_output_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/cross_age_dataset_cleaned_and_resized/"
 excluded_images_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/cross_age_dataset_excluded_images/"
 blurry_images_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/cross_age_dataset_blurry_images/"

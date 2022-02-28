@@ -9,10 +9,11 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torchvision
 from sklearn.model_selection import train_test_split
+from PIL import Image
 
 if __name__ == '__main__':
     # original_images_path = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
-    original_images_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/cross_age_dataset_cleaned_and_resized/"
+    # original_images_path = "/Users/joshcheema/Box Sync/MSAI/MSAI 495 DL/project_data/cross_age_dataset_cleaned_and_resized/"
     path_main = os.path.split(os.getcwd())[0]
     df = pd.read_csv(path_main + '/files/train.txt', sep=' ', header=None)
     df.columns = ['name', 'class']
@@ -41,40 +42,43 @@ if __name__ == '__main__':
     # net = Simple()
     # net = Simple()
 
-    model_conv = torchvision.models.vgg16_bn(pretrained=True)
-    #num_ftrs = model_conv.classifier.
-    for param in model_conv.parameters():
-        param.requires_grad = False
-    model_conv.classifier = nn.Sequential(
-            nn.Linear(25088 , 512),
-            nn.BatchNorm1d(512),
-            nn.Dropout(0.2),
-            nn.Linear(512 , 256),
-            nn.Linear(256 , 3)
-        )
-    net = model_conv
+    # model_conv = torchvision.models.vgg16_bn(pretrained=True)
 
+    #num_ftrs = model_conv.classifier.
+    # for param in model_conv.parameters():
+    #     param.requires_grad = False
+    # model_conv.classifier = nn.Sequential(
+    #         nn.Linear(25088 , 512),
+    #         nn.BatchNorm1d(512),
+    #         nn.Dropout(0.2),
+    #         nn.Linear(512 , 256),
+    #         nn.Linear(256 , 3)
+    #     )
+
+    # net = model_conv
+
+    net = Simple()
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
-    dataset = BinaryClass(train, original_images_path)
-    dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
+    train_dataset = BinaryClass(train, original_images_path, train=True)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=100)
     val_dataset = BinaryClass(valid, original_images_path, train=False)
-    val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)
     overall_loss = []
 
-    for epoch in range(10):
+    for epoch in range(1):
         running_loss = 0.0
 
-        for i, k in enumerate(dataset):
+        for i, k in enumerate(train_dataloader):
             X, y = k
             optimizer.zero_grad()
             predictions = net(X)
             loss = criterion(predictions, y)
             loss.backward()
             optimizer.step()
-
             running_loss += loss.item()
+
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
@@ -84,9 +88,9 @@ if __name__ == '__main__':
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
         correct = 0
         total = 0
-        # since we're not training, we don't need to calculate the gradients for our outputs
+
         with torch.no_grad():
-            for data in val_dataset:
+            for data in val_dataloader:
                 images, labels = data
                 # calculate outputs by running images through the network
                 outputs = net(images)
@@ -97,5 +101,6 @@ if __name__ == '__main__':
         print('validation_accuracy------------->' + str(correct / total))
 
         running_loss = 0.0
+
     print('finished_training' + str(loss.item()))
     print('mean_loss' + str(np.mean(overall_loss)))
