@@ -41,12 +41,11 @@ df = df.drop(['class'], axis=1)
 df.columns = ['name', 'class']
 
 # train, valid = train_test_split(df, test_size=0.2, random_state=42)
-# train = train.reset_index(drop=True)
-# valid = train.reset_index(drop=True)
 
-train, valid = train_test_split(df, test_size=0.2, random_state=42)
 train = df.sample(frac=0.8, random_state=200)
 valid = df.drop(train.index)
+train = train.reset_index(drop=True)
+valid = valid.reset_index(drop=True)
 
 classes = [0, 1, 2]
 correct_pred = {classname: 0 for classname in classes}

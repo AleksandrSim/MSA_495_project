@@ -30,12 +30,14 @@ if __name__ == '__main__':
     df = df.drop(['class'], axis=1)
     df.columns = ['name', 'class']
 
-    train, valid = train_test_split(df, test_size=0.2, random_state=42)
+    # train, valid = train_test_split(df, test_size=0.2, random_state=42)
+
     train = df.sample(frac=0.8,random_state=200)
     valid = df.drop(train.index)
 
-    # # train = train.reset_index(drop=True)
-    # # valid = train.reset_index(drop=True)
+    train = train.reset_index(drop=True)
+    valid = valid.reset_index(drop=True)
+
     #   df = df.sample(frac=1).reset_index(drop=True)
     # df_filtered = df[['image_name','old_young']]
     # print(df_filtered)  # make this dinamic and change the path
@@ -61,15 +63,14 @@ if __name__ == '__main__':
 
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
-    train_dataset = BinaryClass(train, original_images_path, train=True)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=100)
-    val_dataset = BinaryClass(valid, original_images_path, train=False)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)
+    train_dataset = BinaryClass(train, clean_images_output_path, train=True)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=1)
+    val_dataset = BinaryClass(valid, clean_images_output_path, train=False)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1)
     overall_loss = []
 
     for epoch in range(1):
         running_loss = 0.0
-
         for i, k in enumerate(train_dataloader):
             X, y = k
             optimizer.zero_grad()
@@ -78,6 +79,8 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
+
+            print('i did something')
 
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')

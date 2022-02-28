@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset
-import torchvision.transforms as transforms
+from torchvision import transforms
 from PIL import Image
 import torch
 
@@ -16,13 +16,13 @@ class BinaryClass(Dataset):
         self.path_to_images = path_to_images
         self.train = train
 
-        # transform = {"train": transforms.Compose([
-        #     transforms.RandomResizedCrop(224),
-        #     transforms.RandomHorizontalFlip(),
-        #     transforms.ToTensor()]),
-        #     "valid": transforms.Compose([transforms.ToTensor()])}
-        #
-        # self.transform = transform
+        transform = {"train": transforms.Compose([
+            transforms.RandomResizedCrop(224),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor()]),
+            "valid": transforms.Compose([transforms.ToTensor()])}
+
+        self.transform = transform
 
     def __len__(self):
         return len(self.dataset)
@@ -32,10 +32,10 @@ class BinaryClass(Dataset):
 
         X = Image.open(self.path_to_images + self.dataset['name'][index])
 
-        # if self.train == True:
-        #     X = self.transform["train"](X)
-        # else:
-        #     X = self.transform["valid"](X)
+        if self.train == True:
+            X = self.transform["train"](X)
+        else:
+            X = self.transform["valid"](X)
 
         return X, y
 
@@ -61,10 +61,12 @@ if __name__ == '__main__':
     train = df.sample(frac=0.8,random_state=200)
     valid = df.drop(train.index)
 
-    train_dataset = BinaryClass(train, original_images_path, train=True)
+    train = train.reset_index(drop=True)
+    valid = valid.reset_index(drop=True)
+
+    train_dataset = BinaryClass(train, clean_images_output_path, train=True)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=100)
 
-    val_dataset = BinaryClass(valid, original_images_path, train=False)
+    val_dataset = BinaryClass(valid, clean_images_output_path, train=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)
-
 
