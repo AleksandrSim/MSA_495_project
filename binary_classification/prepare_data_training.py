@@ -1,0 +1,65 @@
+import os
+import pandas as pd
+import torch
+from torch import nn
+import os
+from global_variables import *
+from dataloader import BinaryClass
+from model import Simple, Medium, AgeAlexNet
+from torch.utils.data import DataLoader
+import numpy as np
+import torchvision
+from sklearn.model_selection import train_test_split
+
+
+def get_the_df(path, class_3 = False):
+    df = pd.read_csv(path, sep=' ', header=None)
+    df.columns = ['name', 'class']
+    classes_to_covert = list(df['class'])
+    if class_3== True:
+        new = []
+        for i in classes_to_covert:
+            if i == 0 or i == 1:
+                new.append(0)
+            elif i == 2 or i == 3:
+                new.append(1)
+            else:
+                new.append(2)
+        df['3_class'] = np.array(new)
+        df['3_class'] = np.array(new)
+        df = df.drop(['class'], axis=1)
+
+    df.columns = ['name', 'class']
+    train, valid = train_test_split(df, test_size=0.2, random_state=42)
+    train = train.reset_index(drop=True)
+    valid = train.reset_index(drop=True)
+    return train,valid
+
+
+
+
+def get_the_model(pretrained= True):
+    model_conv =torchvision.models.resnet18(pretrained=pretrained)
+    for param in model_conv.parameters():
+        param.requires_grad = False
+    num_ftrs = model_conv.fc.in_features
+    model_conv.fc = nn.Sequential(nn.Linear(num_ftrs, 512),
+                                 nn.ReLU(),
+                                 nn.Dropout(0.2),
+                                 nn.Linear(512, 5,
+                                 nn.LogSoftmax(dim=1)))
+    net = model_conv
+    return net
+
+
+''''
+    for param in model_conv.parameters():
+        param.requires_grad = False
+    model_conv.classifier = nn.Sequential(
+            nn.Linear(25088 , 512),
+            nn.BatchNorm1d(512),
+            nn.Dropout(0.2),
+            nn.Linear(512 , 256),
+            nn.Linear(256 , 3)
+        )
+'''

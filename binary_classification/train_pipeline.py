@@ -9,45 +9,15 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torchvision
 from sklearn.model_selection import train_test_split
-
+import prepare_data_training
 if __name__ == '__main__':
     original_images_path = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
     path_main = os.path.split(os.getcwd())[0]
-    df = pd.read_csv(path_main + '/files/train.txt', sep=' ', header=None)
-    df.columns = ['name', 'class']
-    classes_to_covert = list(df['class'])
-    new = []
-    for i in classes_to_covert:
-        if i == 0 or i == 1:
-            new.append(0)
-        elif i == 2 or i == 3:
-            new.append(1)
-        else:
-            new.append(2)
-    df['3_class'] = np.array(new)
-    df = df.drop(['class'], axis=1)
-    df.columns = ['name', 'class']
-    train, valid = train_test_split(df, test_size=0.2, random_state=42)
-    train = train.reset_index(drop=True)
-    valid = train.reset_index(drop=True)
+    train,valid = prepare_data_training.get_the_df(path_main+original_images_path)
+    net =  prepare_data_training.get_the_model()
 
-    #   df = df.sample(frac=1).reset_index(drop=True)
-    # df_filtered = df[['image_name','old_young']]
-    # print(df_filtered)  # make this dinamic and change the path
-    # net = Simple()
-    # net = Simple()
-    model_conv = torchvision.models.vgg16_bn(pretrained=True)
-    #num_ftrs = model_conv.classifier.
-    for param in model_conv.parameters():
-        param.requires_grad = False
-    model_conv.classifier = nn.Sequential(
-            nn.Linear(25088 , 512),
-            nn.BatchNorm1d(512),
-            nn.Dropout(0.2),
-            nn.Linear(512 , 256),
-            nn.Linear(256 , 3)
-        )
-    net = model_conv
+
+
 
 
     criterion = nn.CrossEntropyLoss()
