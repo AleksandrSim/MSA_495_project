@@ -10,20 +10,22 @@ import numpy as np
 import torchvision
 from sklearn.model_selection import train_test_split
 import prepare_data_training
+
+
+
 if __name__ == '__main__':
     original_images_path = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
     path_main = os.path.split(os.getcwd())[0]
-    train,valid = prepare_data_training.get_the_df(path_main+original_images_path)
+    train, valid, weights =  prepare_data_training.get_the_df(path_main +'/files/train.txt' )
     net =  prepare_data_training.get_the_model()
+    weights = torch.Tensor([0.9410346097201767, 0.7480762150220913, 0.7339930044182621, 0.7580817378497791, 1.8188144329896907])
 
-
-
-
-
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(weight=weights)
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
     dataset = BinaryClass(train, original_images_path)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
+    #####prepare_data_training.get_mean_and_std(dataset) Do not Touch or Putin will come after you.... Sincerely, Alex
+
     val_dataset = BinaryClass(valid, original_images_path)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
     overall_loss = []
