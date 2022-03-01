@@ -154,16 +154,19 @@ if __name__ == '__main__':
 
     df = pd.read_csv(path_main + '/files/cleaned_images.csv')
 
+    # To read the data directory from the argument given
+    user_path = sys.argv[1]
+
     df = df[['name', 'class']]
     counter = 0
     exclusion_counter = 0
     for i in range(len(df)):
 
-        if file_exists(clean_images_output_path + df['name'][i]) or file_exists(
-                blurry_images_path + df['name'][i]) or file_exists(excluded_images_path + df['name'][i]):
+        if file_exists(user_path + clean_images_output_path + df['name'][i]) or file_exists(
+                user_path + blurry_images_path + df['name'][i]) or file_exists(user_path + excluded_images_path + df['name'][i]):
             continue
 
-        image = cv2.imread(original_images_path + df['name'][i])
+        image = cv2.imread(user_path + original_images_path + df['name'][i])
         # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         fm = variance_of_laplacian(image)
@@ -171,7 +174,7 @@ if __name__ == '__main__':
         # then the image should be considered "blurry"
         if fm < images_blur_threshold:
             exclusion_counter += 1
-            Image.fromarray(image.astype(np.uint8)).save(blurry_images_path + df['name'][i])
+            Image.fromarray(image.astype(np.uint8)).save(user_path + blurry_images_path + df['name'][i])
             continue
 
         face_detector = cv2.CascadeClassifier(face_detector_path)
@@ -188,12 +191,11 @@ if __name__ == '__main__':
         if img is not None:
             img = cv2.resize(img, image_dimensions)
             #cv2.imwrite(clean_images_output_path + df['name'][i], img)
-            Image.fromarray(img.astype(np.uint8)).save(clean_images_output_path + df['name'][i])
+            Image.fromarray(img.astype(np.uint8)).save(user_path + clean_images_output_path + df['name'][i])
         else:
             exclusion_counter += 1
-            Image.fromarray(image.astype(np.uint8)).save(excluded_images_path + df['name'][i])
+            Image.fromarray(image.astype(np.uint8)).save(user_path + excluded_images_path + df['name'][i])
             # cv2.imwrite(excluded_images_path + df['name'][i], image)
-
             continue
 
         counter += 1
