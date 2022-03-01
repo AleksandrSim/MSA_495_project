@@ -32,16 +32,17 @@ class BinaryClass(Dataset):
 
         X = Image.open(self.path_to_images + self.dataset['name'][index])
 
-        if self.train == True:
+        if self.train:
             X = self.transform["train"](X)
         else:
             X = self.transform["valid"](X)
 
         return X, y
 
+
 if __name__ == '__main__':
 
-# can remove this all later
+    # can remove this all later
     path_main = os.path.split(os.getcwd())[0]
     df = pd.read_csv(path_main + '/files/train.txt', sep=' ', header=None)
     df.columns = ['name', 'class']
@@ -58,7 +59,7 @@ if __name__ == '__main__':
     df = df.drop(['class'], axis=1)
     df.columns = ['name', 'class']
 
-    train = df.sample(frac=0.8,random_state=200)
+    train = df.sample(frac=0.8, random_state=200)
     valid = df.drop(train.index)
 
     train = train.reset_index(drop=True)
@@ -69,4 +70,3 @@ if __name__ == '__main__':
 
     val_dataset = BinaryClass(valid, clean_images_output_path, train=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)
-

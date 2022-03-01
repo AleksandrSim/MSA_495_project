@@ -1,12 +1,10 @@
 import sys
-
 import math
 import pandas as pd
 import numpy as np
 import cv2
 from PIL import Image
 from matplotlib import pyplot as plt
-
 from global_variables import *
 from helper_functions import *
 
@@ -27,8 +25,14 @@ def euclidean_distance(a, b):
 
 
 def detectFace(img):
-    faces = face_detector.detectMultiScale(img, 1.3, 5)
-    # print("found faces: ", len(faces))
+
+    if img is None:
+        return None, None
+
+    faces = face_detector.detectMultiScale(
+        img,
+        scaleFactor=1.3,
+        minNeighbors=3)
 
     if len(faces) > 0:
         face = faces[0]
@@ -37,19 +41,17 @@ def detectFace(img):
         img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         return img, img_gray
     else:
-        # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = img_gray = None
-        return img, img_gray
-
-    # raise ValueError("No face found in the passed image ")
+        return None, None
 
 
 def alignFace(img):
-    #plt.imshow(img[:, :, ::-1])
-    #plt.show()
+    # plt.imshow(img[:, :, ::-1])
+    # plt.show()
 
     img_raw = img.copy()
+
     img, gray_img = detectFace(img)
+
     eyes = eye_detector.detectMultiScale(gray_img)
 
     if len(eyes) >= 2:
@@ -57,8 +59,8 @@ def alignFace(img):
         base_eyes = eyes[:, 2]
         # print(base_eyes)
         items = []
-        for i in range(0, len(base_eyes)):
-            item = (base_eyes[i], i)
+        for index, eye in enumerate(base_eyes):
+            item = (eye, index)
             items.append(item)
         df = pd.DataFrame(items, columns=["length", "idx"]).sort_values(by=['length'], ascending=False)
         eyes = eyes[df.idx.values[0:2]]
@@ -123,9 +125,10 @@ def alignFace(img):
 
         new_img = Image.fromarray(img_raw)
         new_img = np.array(new_img.rotate(direction * angle))
+
         return new_img
 
-    return None
+    return img_raw
 
 
 if __name__ == '__main__':
@@ -145,7 +148,7 @@ if __name__ == '__main__':
     eye_detector_path = path + "/data/haarcascade_eye.xml"
     nose_detector_path = path + "/data/haarcascade_mcs_nose.xml"
 
-    generate_dir_if_not_exists(clean_images_path)
+    generate_dir_if_not_exists(clean_images_output_path)
     generate_dir_if_not_exists(blurry_images_path)
     generate_dir_if_not_exists(excluded_images_path)
 
@@ -156,40 +159,43 @@ if __name__ == '__main__':
     exclusion_counter = 0
     for i in range(len(df)):
 
+        if file_exists(clean_images_output_path + df['name'][i]) or file_exists(
+                blurry_images_path + df['name'][i]) or file_exists(excluded_images_path + df['name'][i]):
+            continue
+
         image = cv2.imread(original_images_path + df['name'][i])
-        '''
+        # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
         fm = variance_of_laplacian(image)
         # if the focus measure is less than the supplied threshold,
         # then the image should be considered "blurry"
         if fm < images_blur_threshold:
             exclusion_counter += 1
-            cv2.imwrite(blurry_images_path + df['name'][i], image)
+            Image.fromarray(image.astype(np.uint8)).save(blurry_images_path + df['name'][i])
             continue
-        '''
 
         face_detector = cv2.CascadeClassifier(face_detector_path)
         eye_detector = cv2.CascadeClassifier(eye_detector_path)
         nose_detector = cv2.CascadeClassifier(nose_detector_path)
 
-        '''
         alignedFace = alignFace(image)
         # plt.imshow(alignedFace[:, :, ::-1])
         # plt.show()
-        img, gray_img = detectFace(alignedFace)
+        img, gray_img = detectFace(alignFace)
         # plt.imshow(img[:, :, ::-1])
         # plt.show()
-        '''
-
-        img, gray_img = detectFace(image)
 
         if img is not None:
             img = cv2.resize(img, image_dimensions)
-            cv2.imwrite(clean_images_path + df['name'][i], img)
+            #cv2.imwrite(clean_images_output_path + df['name'][i], img)
+            Image.fromarray(img.astype(np.uint8)).save(clean_images_output_path + df['name'][i])
         else:
             exclusion_counter += 1
-            cv2.imwrite(excluded_images_path + df['name'][i], image)
+            Image.fromarray(image.astype(np.uint8)).save(excluded_images_path + df['name'][i])
+            # cv2.imwrite(excluded_images_path + df['name'][i], image)
+
             continue
 
         counter += 1
-        print(f"\rImages processed -> {counter} and blurry images removed -> {exclusion_counter}", end='')
+        print(f"\rImages processed -> {counter} and number of excluded images -> {exclusion_counter}", end='')
         sys.stdout.flush()
