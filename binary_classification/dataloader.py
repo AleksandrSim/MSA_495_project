@@ -1,9 +1,9 @@
+import sys
+
 from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image
 import torch
-
-# i added stuff to debug direclty here, can remove later
 import os
 import pandas as pd
 import numpy as np
@@ -44,9 +44,11 @@ class BinaryClass(Dataset):
 
 if __name__ == '__main__':
 
+    # To read the data directory from the argument given
+    user_path = sys.argv[1]
+
     # can remove this all later
-    path_main = os.path.split(os.getcwd())[0]
-    df = pd.read_csv(path_main + '/files/train.txt', sep=' ', header=None)
+    df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/train.txt', sep=' ', header=None)
     df.columns = ['name', 'class']
     classes_to_covert = list(df['class'])
     new = []
@@ -67,8 +69,8 @@ if __name__ == '__main__':
     train = train.reset_index(drop=True)
     valid = valid.reset_index(drop=True)
 
-    train_dataset = BinaryClass(train, clean_images_output_path, train=True)
+    train_dataset = BinaryClass(train, user_path + clean_images_output_path, train=True)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=100)
 
-    val_dataset = BinaryClass(valid, clean_images_output_path, train=False)
+    val_dataset = BinaryClass(valid, user_path + clean_images_output_path, train=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)
