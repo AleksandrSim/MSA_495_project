@@ -36,10 +36,13 @@ if __name__ == '__main__':
             minNeighbors=3,
             minSize=(30, 30))
         if len(faces) == 0:
+            exclusion_counter += 1
+            resized = cv2.resize(image, image_dimensions)
+            Image.fromarray(image.astype(np.uint8)).save(user_path + excluded_images_path + df['name'][i])
             continue
         for (x, y, w, h) in faces:
             faces = image[y:y + h, x:x + w]
-            warped = cv2.resize(faces, (400, 400))
+            warped = cv2.resize(faces, image_dimensions)
         Image.fromarray(warped.astype(np.uint8)).save(user_path + clean_images_output_path + df['name'][i])
         counter += 1
         print(f"\rImages processed -> {counter} and number of excluded images -> {exclusion_counter}", end='')
