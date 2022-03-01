@@ -20,7 +20,8 @@ class BinaryClass(Dataset):
             transforms.RandomResizedCrop(224),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),transforms.Normalize((0.6673, 0.4973, 0.4194),
-                                                     (0.2420, 0.2107, 0.2029))]),
+                                                     (0.2420, 0.2107, 0.2029)),
+        transforms.ToTensor()]),
             "valid": transforms.Compose([transforms.ToTensor()])}
 
         self.transform = transform
