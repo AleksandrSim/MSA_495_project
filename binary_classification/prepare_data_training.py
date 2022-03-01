@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torchvision
 from sklearn.model_selection import train_test_split
-NUM_CLASSES = 5
+NUM_CLASSES = 2
 
 
 def get_the_df(path, class_3 = False, class_2 = False):
@@ -30,16 +30,18 @@ def get_the_df(path, class_3 = False, class_2 = False):
         df['3_class'] = np.array(new)
         df = df.drop(['class'], axis=1)
     if class_2== True:
+        df = df[df['class'] != 2]
+        df = df[df['class'] != 3]
         new = []
         for i in classes_to_covert:
-            if i == 0:
+            if i == 0 or i ==1:
                 new.append(0)
             elif i ==4:
                 new.append(1)
-        df['3_class'] = np.array(new)
-        df['3_class'] = np.array(new)
-        df = df.drop(['class'], axis=1)
+        df = df.reset_index(drop=True)
 
+        df['3_class'] = np.array(new)
+        df = df.drop(['class'], axis =1)
 
     df.columns = ['name', 'class']
     train, valid = train_test_split(df, test_size=0.2, random_state=42)

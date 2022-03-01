@@ -16,11 +16,11 @@ import prepare_data_training
 if __name__ == '__main__':
     original_images_path = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
     path_main = os.path.split(os.getcwd())[0]
-    train, valid, weights =  prepare_data_training.get_the_df(path_main +'/files/train.txt' )
+    train, valid, weights =  prepare_data_training.get_the_df(path_main +'/files/train.txt',class_2=True )
     net =  prepare_data_training.get_the_model()
     weights = torch.Tensor([0.9410346097201767, 0.7480762150220913, 0.7339930044182621, 0.7580817378497791, 1.8188144329896907])
-
-    criterion = nn.CrossEntropyLoss(weight=weights)
+    weights_to_class =  torch.Tensor([0.3676872403338698, 0.6323127596661302])
+    criterion = nn.CrossEntropyLoss(weight=weights_to_class)
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
     dataset = BinaryClass(train, original_images_path)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
-                torch.save(net.state_dict(), class_model_path_Alex + str(i) + '.pt')
+                torch.save(net.state_dict(), class_model_path_Alex + 'two_class'+str(i) + '.pt')
                 print('fin')
 
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
