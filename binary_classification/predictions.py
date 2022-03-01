@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torchvision
 import sys
+from helper_functions import *
 from sklearn.model_selection import train_test_split
 import prepare_data_training
 
@@ -28,7 +29,13 @@ model_conv.fc = nn.Sequential(nn.Linear(num_ftrs, 512),
 user_path = sys.argv[1]
 user_provided_model = sys.argv[2]
 
-states = torch.load(user_path + class_model_path + user_provided_model)
+pretrained_model_path = user_path + class_model_path + user_provided_model
+
+if file_exists(pretrained_model_path):
+    states = torch.load(pretrained_model_path)
+else:
+    print("Please check the file directory or the parameter name you provided for the pretrained-model and try again..")
+    exit(0)
 
 model_conv.load_state_dict(states)
 

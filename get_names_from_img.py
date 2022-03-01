@@ -1,24 +1,29 @@
-
-path_to_dataset_resized = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized'
 import os
+import sys
+from global_variables import *
+
+
 def age_to_group(age):
     if age <= 20:
         return 0
-    elif age > 20 and age <= 30:
+    elif 20 < age <= 30:
         return 1
-    elif age > 30 and age <= 40:
+    elif 30 < age <= 40:
         return 2
-    elif age > 40 and age <= 50:
+    elif 40 < age <= 50:
         return 3
     elif age > 50:
         return 4
-if __name__ =='__main__':
 
 
+if __name__ == '__main__':
+
+    # To read the data directory from the argument given
+    user_path = sys.argv[1]
 
     txt = []
 
-    for filename in os.listdir(path_to_dataset_resized):
+    for filename in os.listdir(user_path + clean_images_output_path):
         if '.DS_Store' in filename:
             continue
         print(filename)
@@ -30,4 +35,3 @@ if __name__ =='__main__':
 
     with open('files/train.txt', 'w') as f:
         f.writelines(txt)
-

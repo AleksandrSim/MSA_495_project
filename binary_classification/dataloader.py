@@ -46,7 +46,6 @@ if __name__ == '__main__':
 
     # To read the data directory from the argument given
     user_path = sys.argv[1]
-
     # can remove this all later
     df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/train.txt', sep=' ', header=None)
     df.columns = ['name', 'class']

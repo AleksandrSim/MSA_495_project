@@ -1,5 +1,4 @@
 import sys
-
 import pandas as pd
 import torch
 from torch import nn
@@ -13,10 +12,13 @@ import torchvision
 from sklearn.model_selection import train_test_split
 import prepare_data_training
 from global_variables import *
+from helper_functions import *
 
 if __name__ == '__main__':
     # To read the data directory from the argument given
     user_path = sys.argv[1]
+    generate_dir_if_not_exists(user_path + class_model_path)
+
     train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt', class_2=True)
     net = prepare_data_training.get_the_model()
     weights = torch.Tensor(
