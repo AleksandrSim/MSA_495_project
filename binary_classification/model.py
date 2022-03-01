@@ -10,7 +10,7 @@ class Simple(nn.Module):
 
         self.maxPool = nn.MaxPool2d(2,2)
 
-        self.Linear1 = nn.Linear(112908, 1000)
+        self.Linear1 = nn.Linear(33708, 1000)
         self.activation = nn.Tanh()
         self.Linear = nn.Linear(1000, 500)
         self.sigmoid = nn.Sigmoid()
