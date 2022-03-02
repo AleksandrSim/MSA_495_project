@@ -9,11 +9,11 @@ import numpy as np
 from global_variables import *
 
 
-class BinaryClass(Dataset):
-    def __init__(self, dataset, path_to_images, train=True):
+class GANClass(Dataset):
+    def __init__(self, dataset, path_to_images, train_dataset=True):
         self.dataset = dataset
         self.path_to_images = path_to_images
-        self.train = train
+        self.train = train_dataset
 
         transform = {"train": transforms.Compose([
             transforms.RandomResizedCrop(224),
@@ -42,7 +42,6 @@ class BinaryClass(Dataset):
 
 
 if __name__ == '__main__':
-
     # To read the data directory from the argument given
     user_path = sys.argv[1]
     # can remove this all later
@@ -67,8 +66,8 @@ if __name__ == '__main__':
     train = train.reset_index(drop=True)
     valid = valid.reset_index(drop=True)
 
-    train_dataset = BinaryClass(train, user_path + clean_images_output_path, train=True)
+    train_dataset = GANClass(train, user_path + clean_images_output_path)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=100)
 
-    val_dataset = BinaryClass(valid, user_path + clean_images_output_path, train=False)
+    val_dataset = GANClass(valid, user_path + clean_images_output_path, False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)
