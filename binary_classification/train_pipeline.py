@@ -17,7 +17,7 @@ from helper_functions import *
 if __name__ == '__main__':
     # To read the data directory from the argument given
     user_path = sys.argv[1]
-    generate_dir_if_not_exists(user_path + class_model_path)
+    generate_dir_if_not_exists(user_path + classification_class_model_path)
     train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt', class_2=True)
     net = prepare_data_training.get_the_model()
     weights = torch.Tensor(
@@ -46,7 +46,7 @@ if __name__ == '__main__':
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
-                torch.save(net.state_dict(), user_path + class_model_path + 'two_class' + str(i) + '.pt')
+                torch.save(net.state_dict(), user_path + classification_class_model_path + 'two_class' + str(i) + '.pt')
                 print('fin')
 
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
@@ -65,5 +65,5 @@ if __name__ == '__main__':
         print('validation_accuracy------------->' + str(correct / total))
 
         running_loss = 0.0
-    print('finished_training' + str(loss.item()))
-    print('mean_loss' + str(np.mean(overall_loss)))
+    print('finished_training -> ' + str(loss.item()))
+    print('mean_loss - > ' + str(np.mean(overall_loss)))

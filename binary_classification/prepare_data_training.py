@@ -4,9 +4,7 @@ import torch
 from torch import nn
 import os
 from global_variables import *
-from dataloader import BinaryClass
-from model import Simple, Medium, AgeAlexNet
-from torch.utils.data import DataLoader
+from helper_functions import *
 import numpy as np
 import torchvision
 from sklearn.model_selection import train_test_split

@@ -13,7 +13,6 @@ from helper_functions import *
 from sklearn.model_selection import train_test_split
 import prepare_data_training
 
-
 if __name__ == '__main__':
 
     net = Simple()
@@ -32,22 +31,23 @@ if __name__ == '__main__':
     user_path = sys.argv[1]
     user_provided_model = sys.argv[2]
 
-    pretrained_model_path = user_path + class_model_path + user_provided_model
+    pretrained_model_path = user_path + classification_class_model_path + user_provided_model
 
     # Check all the models and the accuracy they produce:
-
 
     if file_exists(pretrained_model_path):
         states = torch.load(pretrained_model_path)
     else:
-        print("Please check the file directory or the parameter name you provided for the pretrained-model and try again..")
+        print(
+            "Please check the file directory or the parameter name you provided for the pretrained-model and try again..")
         exit(0)
 
     model_conv.load_state_dict(states)
 
     net = model_conv
 
-    train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt', class_2=True)
+    train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt',
+                                                             class_2=True)
     print(net)
 
     classes = [0, 1]
