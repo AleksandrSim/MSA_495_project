@@ -53,6 +53,7 @@ if __name__ == '__main__':
 
     val_dataset = BinaryClass(valid, user_path + clean_images_output_path, train=False)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
+
     # again no gradients needed
     with torch.no_grad():
         for i, data in enumerate(val_dataset):
