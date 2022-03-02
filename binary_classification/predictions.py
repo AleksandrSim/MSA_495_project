@@ -34,6 +34,9 @@ if __name__ == '__main__':
 
     pretrained_model_path = user_path + class_model_path + user_provided_model
 
+    # Check all the models and the accuracy they produce:
+
+
     if file_exists(pretrained_model_path):
         states = torch.load(pretrained_model_path)
     else:

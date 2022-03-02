@@ -6,7 +6,7 @@ excluded_images_path = "/output/cross_age_dataset_excluded_images/"
 blurry_images_path = "/output/cross_age_dataset_blurry_images/"
 class_model_path = "/models/"
 gan_model_path = "/models/gan_model/"
-gan_output_img_path = "/output/gan_gen_images/"
+gan_output_img_path = "/output/gan_generated_imgs/"
 
 
 image_dimensions = (400, 400)
