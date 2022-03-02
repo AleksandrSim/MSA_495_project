@@ -26,9 +26,9 @@ if __name__ == '__main__':
     weights_to_class = torch.Tensor([0.3676872403338698, 0.6323127596661302])
     criterion = nn.CrossEntropyLoss(weight=weights_to_class)
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
-    dataset = BinaryClass(train, user_path + clean_images_output_path)
+    dataset = BinaryClass(train, user_path + clean_images_output_path,train=True)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
-    val_dataset = BinaryClass(valid, user_path + clean_images_output_path)
+    val_dataset = BinaryClass(valid, user_path + clean_images_output_path,train=False)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
     overall_loss = []
 

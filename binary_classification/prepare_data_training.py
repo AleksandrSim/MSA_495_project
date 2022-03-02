@@ -47,7 +47,7 @@ def get_the_df(path, class_3=False, class_2=False):
     df.columns = ['name', 'class']
     train, valid = train_test_split(df, test_size=0.2, random_state=42)
     train = train.reset_index(drop=True)
-    valid = train.reset_index(drop=True)
+    valid = valid.reset_index(drop=True)
     weights = train.groupby(['class']).count().reset_index()
     su = sum(weights['name'])
     raw = list(weights['name'])
