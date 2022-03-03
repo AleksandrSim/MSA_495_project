@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # To read the data directory from the argument given
     user_path = config['user_path']
 
-    generate_dir_if_not_exists(user_path + clean_images_output_path)
+    generate_dir_if_not_exists(user_path + clean_images_path)
     generate_dir_if_not_exists(user_path + excluded_images_path)
 
     df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/cleaned_images.csv')
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     counter = exclusion_counter = 0
     for i in range(len(df)):
 
-        if file_exists(user_path + clean_images_output_path + df['name'][i]) or file_exists(user_path + excluded_images_path + df['name'][i]):
+        if file_exists(user_path + clean_images_path + df['name'][i]) or file_exists(user_path + excluded_images_path + df['name'][i]):
             continue
 
         image = cv2.imread(user_path + original_images_path + df['name'][i])
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         for (x, y, w, h) in faces:
             faces = image[y:y + h, x:x + w]
             warped = cv2.resize(faces, image_dimensions)
-        Image.fromarray(warped.astype(np.uint8)).save(user_path + clean_images_output_path + df['name'][i])
+        Image.fromarray(warped.astype(np.uint8)).save(user_path + clean_images_path + df['name'][i])
         counter += 1
         print(f"\rImages processed -> {counter} and number of excluded images -> {exclusion_counter}", end='')
         sys.stdout.flush()

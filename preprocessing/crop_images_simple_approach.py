@@ -1,8 +1,11 @@
 import sys
 import math
+from argparse import ArgumentParser
+
 import pandas as pd
 import numpy as np
 import cv2
+import yaml
 from PIL import Image
 from matplotlib import pyplot as plt
 from global_variables import *
@@ -133,6 +136,18 @@ def alignFace(img):
 
 if __name__ == '__main__':
 
+    parser = ArgumentParser()
+    parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
+
+    # To read the data directory from the argument given
+    args = parser.parse_args()
+    with open(args.config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    print(config)
+
+    # To read the data directory from the argument given
+    user_path = config['user_path']
+
     print("Image Cropping Starting..")
 
     path_main = os.path.split(os.getcwd())[0]
@@ -148,9 +163,9 @@ if __name__ == '__main__':
     eye_detector_path = path + "/data/haarcascade_eye.xml"
     nose_detector_path = path + "/data/haarcascade_mcs_nose.xml"
 
-    generate_dir_if_not_exists(clean_images_output_path)
-    generate_dir_if_not_exists(blurry_images_path)
-    generate_dir_if_not_exists(excluded_images_path)
+    generate_dir_if_not_exists(user_path + clean_images_path)
+    generate_dir_if_not_exists(user_path + blurry_images_path)
+    generate_dir_if_not_exists(user_path + excluded_images_path)
 
     df = pd.read_csv(path_main + '/files/cleaned_images.csv')
 
@@ -162,7 +177,7 @@ if __name__ == '__main__':
     exclusion_counter = 0
     for i in range(len(df)):
 
-        if file_exists(user_path + clean_images_output_path + df['name'][i]) or file_exists(
+        if file_exists(user_path + clean_images_path + df['name'][i]) or file_exists(
                 user_path + blurry_images_path + df['name'][i]) or file_exists(user_path + excluded_images_path + df['name'][i]):
             continue
 
@@ -191,7 +206,7 @@ if __name__ == '__main__':
         if img is not None:
             img = cv2.resize(img, image_dimensions)
             #cv2.imwrite(clean_images_output_path + df['name'][i], img)
-            Image.fromarray(img.astype(np.uint8)).save(user_path + clean_images_output_path + df['name'][i])
+            Image.fromarray(img.astype(np.uint8)).save(user_path + clean_images_path + df['name'][i])
         else:
             exclusion_counter += 1
             Image.fromarray(image.astype(np.uint8)).save(user_path + excluded_images_path + df['name'][i])

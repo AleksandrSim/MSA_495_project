@@ -1,4 +1,5 @@
 # Data configs
+# Only change this path and everything updates automatically
 user_path: '/Users/dimitriosmavrofrydis/Projects/Python/CACD_Project'
 
 # Network Configs
@@ -20,5 +21,4 @@ img_size: 256
 batch_size: 3
 num_workers: 4
 epochs: 100
-gpus:
-  - 1
+gpus: 0
