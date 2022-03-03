@@ -1,6 +1,9 @@
 import sys
+from argparse import ArgumentParser
+
 import pandas as pd
 import torch
+import yaml
 from torch import nn
 import os
 from global_variables import *
@@ -15,8 +18,19 @@ from global_variables import *
 from helper_functions import *
 
 if __name__ == '__main__':
+
+    parser = ArgumentParser()
+    parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
+
     # To read the data directory from the argument given
-    user_path = sys.argv[1]
+    args = parser.parse_args()
+    with open(args.config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    print(config)
+
+    # To read the data directory from the argument given
+    user_path = config['user_path']
+
     #generate_dir_if_not_exists( + classification_class_model_path)
     train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt', class_2=True)
     net = prepare_data_training.get_the_model()
