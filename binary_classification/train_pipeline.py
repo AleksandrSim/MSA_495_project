@@ -60,7 +60,7 @@ if __name__ == '__main__':
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
-                #torch.save(net.state_dict(), user_path + classification_class_model_path + 'two_class' + str(i) + '.pt')
+                #torch.save(net.state_dict(), user_path + classification_class_model_path + 'two_class' + str(i) + '.pth')
                 print('fin')
 
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')

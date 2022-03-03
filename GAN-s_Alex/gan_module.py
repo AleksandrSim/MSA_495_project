@@ -9,6 +9,8 @@ from simple_dataloader import ImagetoImageDataset
 from GAN_model import Generator, Discriminator
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
+
 path_to_images = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
 class AgingGAN(pl.LightningModule):
 
@@ -42,6 +44,11 @@ class AgingGAN(pl.LightningModule):
 
             # GAN loss
             fake_B = self.genA2B(real_A)
+            if batch_idx %5 ==0:
+                aged_face = (fake_B.squeeze().permute(1, 2, 0).detach().numpy() + 1.0) / 2.0
+                plt.imshow(aged_face)
+                plt.show()
+
             pred_fake = self.disGB(fake_B)
             loss_GAN_A2B = F.mse_loss(pred_fake, torch.ones(pred_fake.shape).type_as(pred_fake)) * 2
 
@@ -83,8 +90,8 @@ class AgingGAN(pl.LightningModule):
            #                                      self.current_epoch)
             return output
         if batch_idx % 10== 0:
-            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/A2B' + str(batch_idx) + '.pt')
-            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/B2A' + str(batch_idx) + '.pt')
+            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/A2B' + str(batch_idx) + '.pth')
+            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/B2A' + str(batch_idx) + '.pth')
 
 
         if optimizer_idx == 1:
@@ -135,5 +142,5 @@ class AgingGAN(pl.LightningModule):
         print(df)
         dataset = ImagetoImageDataset(df, path_to_images)
         return DataLoader(dataset,
-                          batch_size=3,
+                          batch_size=1,
                           shuffle=True, num_workers = 8)
