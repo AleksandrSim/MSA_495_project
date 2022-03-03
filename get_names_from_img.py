@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     txt = []
 
-    for filename in os.listdir(user_path + clean_images_output_path):
+    for filename in os.listdir(user_path):
         if '.DS_Store' in filename:
             continue
         print(filename)

@@ -17,7 +17,7 @@ from helper_functions import *
 if __name__ == '__main__':
     # To read the data directory from the argument given
     user_path = sys.argv[1]
-    generate_dir_if_not_exists(user_path + classification_class_model_path)
+    #generate_dir_if_not_exists( + classification_class_model_path)
     train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt', class_2=True)
     net = prepare_data_training.get_the_model()
     weights = torch.Tensor(
@@ -25,9 +25,9 @@ if __name__ == '__main__':
     weights_to_class = torch.Tensor([0.3676872403338698, 0.6323127596661302])
     criterion = nn.CrossEntropyLoss(weight=weights_to_class)
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
-    dataset = BinaryClass(train, user_path + clean_images_output_path,train=True)
+    dataset = BinaryClass(train, user_path,train=True)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
-    val_dataset = BinaryClass(valid, user_path + clean_images_output_path,train=False)
+    val_dataset = BinaryClass(valid, user_path,train=False)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
     overall_loss = []
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
             if i % 10 == 9:
                 print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
                 overall_loss.append(loss.item())
-                torch.save(net.state_dict(), user_path + classification_class_model_path + 'two_class' + str(i) + '.pt')
+                #torch.save(net.state_dict(), user_path + classification_class_model_path + 'two_class' + str(i) + '.pt')
                 print('fin')
 
         print(f'[{epoch + 1}, {i + 1:5d}] loss: {running_loss}')
