@@ -1,5 +1,7 @@
 import sys
+from argparse import ArgumentParser
 
+import yaml
 from torch.utils.data import Dataset
 from torchvision import transforms
 from PIL import Image
@@ -44,8 +46,18 @@ class BinaryClass(Dataset):
 
 if __name__ == '__main__':
 
+    parser = ArgumentParser()
+    parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
+
     # To read the data directory from the argument given
-    user_path = sys.argv[1]
+    args = parser.parse_args()
+    with open(args.config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    print(config)
+
+    # To read the data directory from the argument given
+    user_path = config['user_path']
+
     # can remove this all later
     df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/train.txt', sep=' ', header=None)
     df.columns = ['name', 'class']

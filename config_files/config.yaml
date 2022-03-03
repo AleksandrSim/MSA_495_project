@@ -1,0 +1,24 @@
+# Data configs
+user_path: '/Users/dimitriosmavrofrydis/Projects/Python/CACD_Project'
+
+# Network Configs
+ngf: 32
+ndf: 32
+n_blocks: 9
+
+# Loss configs:
+adv_weight: 2
+cycle_weight: 10
+identity_weight: 7
+
+# Optimizer configs:
+lr: 0.0001
+weight_decay: 0.0001
+
+# Training configs:
+img_size: 256
+batch_size: 3
+num_workers: 4
+epochs: 100
+gpus:
+  - 1

@@ -1,3 +1,6 @@
+from argparse import ArgumentParser
+
+import yaml
 from PIL import Image
 import pandas as pd
 import numpy as np
@@ -12,8 +15,18 @@ if __name__ == '__main__':
 
     print("Image Cropping Starting..")
 
+    parser = ArgumentParser()
+    parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
+
     # To read the data directory from the argument given
-    user_path = sys.argv[1]
+    args = parser.parse_args()
+    with open(args.config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    print(config)
+
+
+    # To read the data directory from the argument given
+    user_path = config['user_path']
 
     generate_dir_if_not_exists(user_path + clean_images_output_path)
     generate_dir_if_not_exists(user_path + excluded_images_path)
