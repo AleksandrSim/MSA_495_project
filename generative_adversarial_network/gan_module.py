@@ -1,10 +1,15 @@
+from abc import ABC
 from argparse import ArgumentParser
 import yaml
 from gan_model import *
 from global_variables import *
 
 
-class AgingGAN(pl.LightningModule):
+class AgingGAN(pl.LightningModule, ABC):
+
+    @property
+    def hparams(self):
+        return self._hparams
 
     def __init__(self, hparams):
         super(AgingGAN, self).__init__()
@@ -66,6 +71,8 @@ class AgingGAN(pl.LightningModule):
             self.real_B = real_B
             self.real_A = real_A
 
+            '''
+
             # Log to tb
             if batch_idx % 500 == 0:
                 self.logger.experiment.add_image('Real/A', make_grid(self.real_A, normalize=True, scale_each=True),
@@ -78,6 +85,8 @@ class AgingGAN(pl.LightningModule):
                 self.logger.experiment.add_image('Generated/B',
                                                  make_grid(self.generated_B, normalize=True, scale_each=True),
                                                  self.current_epoch)
+            '''
+
             return output
 
         if optimizer_idx == 1:
@@ -123,13 +132,15 @@ class AgingGAN(pl.LightningModule):
         return [g_optim, d_optim], []
 
     def train_dataloader(self):
+
         train_transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            transforms.Resize((self.hparams['img_size'] + 30, self.hparams['img_size'] + 30)),
-            transforms.RandomCrop(self.hparams['img_size']),
+            #transforms.Resize((self.hparams['img_size'] + 30, self.hparams['img_size'] + 30)),
+            #transforms.RandomCrop(self.hparams['img_size']),
             transforms.ToTensor(),
             transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
+
 
         path_to_A = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainA')
         path_to_B = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainB')
@@ -140,3 +151,7 @@ class AgingGAN(pl.LightningModule):
                           batch_size=self.hparams['batch_size'],
                           num_workers=self.hparams['num_workers'],
                           shuffle=True)
+
+    @hparams.setter
+    def hparams(self, value):
+        self._hparams = value

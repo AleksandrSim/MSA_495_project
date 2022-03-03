@@ -43,11 +43,11 @@ if __name__ == '__main__':
     domainA_dir = os.path.join(user_path + gan_input_images, 'trainA')
     domainB_dir = os.path.join(user_path + gan_input_images, 'trainB')
 
-    os.makedirs(domainA_dir, exist_ok=True)
-    os.makedirs(domainB_dir, exist_ok=True)
+    generate_dir_if_not_exists(domainA_dir)
+    generate_dir_if_not_exists(domainB_dir)
 
     for imageA, imageB in zip(domainA, domainB):
-        if file_exists(os.path.join(user_path + clean_images_path, imageA)):
+        if file_exists(os.path.join(user_path + clean_images_path, imageA)) and not file_exists(os.path.join(domainA_dir, imageA)):
             shutil.copy(os.path.join(user_path + clean_images_path, imageA), os.path.join(domainA_dir, imageA))
-        if file_exists(os.path.join(user_path + clean_images_path, imageB)):
+        if file_exists(os.path.join(user_path + clean_images_path, imageB)) and not file_exists(os.path.join(domainB_dir, imageB)):
             shutil.copy(os.path.join(user_path + clean_images_path, imageB), os.path.join(domainB_dir, imageB))
