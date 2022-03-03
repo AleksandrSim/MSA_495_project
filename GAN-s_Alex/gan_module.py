@@ -75,13 +75,17 @@ class AgingGAN(pl.LightningModule):
                                                  self.current_epoch)
                 self.logger.experiment.add_image('Real/B', make_grid(self.real_B, normalize=True, scale_each=True),
                                                  self.current_epoch)
-                self.logger.experiment.add_image('Generated/A',
-                                                 make_grid(self.generated_A, normalize=True, scale_each=True),
-                                                 self.current_epoch)
-                self.logger.experiment.add_image('Generated/B',
-                                                 make_grid(self.generated_B, normalize=True, scale_each=True),
-                                                 self.current_epoch)
+              #  self.logger.experiment.add_image('Generated/A',
+             #                                    make_grid(self.generated_A, normalize=True, scale_each=True),
+            #                                     self.current_epoch)
+         #       self.logger.experiment.add_image('Generated/B',
+          #                                       make_grid(self.generated_B, normalize=True, scale_each=True),
+           #                                      self.current_epoch)
             return output
+        if batch_idx % 10== 0:
+            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/A2B' + str(batch_idx) + '.pt')
+            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/B2A' + str(batch_idx) + '.pt')
+
 
         if optimizer_idx == 1:
             # Real loss
@@ -129,7 +133,7 @@ class AgingGAN(pl.LightningModule):
         df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/train.txt', sep=' ')
         df.columns = ['name', 'age']
         print(df)
-        dataset = ImagetoImageDataset(df, path_to_images )
+        dataset = ImagetoImageDataset(df, path_to_images)
         return DataLoader(dataset,
                           batch_size=3,
-                          shuffle=True)
+                          shuffle=True, num_workers = 8)
