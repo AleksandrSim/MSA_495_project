@@ -80,8 +80,8 @@ if __name__ == '__main__':
     train = train.reset_index(drop=True)
     valid = valid.reset_index(drop=True)
 
-    train_dataset = BinaryClass(train, user_path + clean_images_output_path, train=True)
+    train_dataset = BinaryClass(train, user_path + clean_images_path, train=True)
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=100)
 
-    val_dataset = BinaryClass(valid, user_path + clean_images_output_path, train=False)
+    val_dataset = BinaryClass(valid, user_path + clean_images_path, train=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=100)

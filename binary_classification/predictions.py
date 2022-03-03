@@ -54,7 +54,7 @@ if __name__ == '__main__':
     correct_pred = {classname: 0 for classname in classes}
     total_pred = {classname: 0 for classname in classes}
 
-    val_dataset = BinaryClass(valid, user_path + clean_images_output_path, train=False)
+    val_dataset = BinaryClass(valid, user_path + clean_images_path, train=False)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
 
     # again no gradients needed

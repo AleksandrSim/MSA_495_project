@@ -1,23 +1,13 @@
 import os
 import shutil
 from argparse import ArgumentParser
-
 import yaml
 from scipy.io import loadmat
-
-parser = ArgumentParser()
-parser.add_argument('--cacd_path',
-                    default='/Users/hasnainraza/Downloads/CACD2000/',
-                    help='The CACD200 images dir')
-parser.add_argument('--metadata',
-                    default='/Users/hasnainraza/Downloads/celebrity2000_meta.mat',
-                    help='The metadata for the CACD2000')
-parser.add_argument('--output_dir',
-                    default='/Users/hasnainraza/Downloads/CACDDomains',
-                    help='The directory to write processed images')
+from global_variables import *
+from helper_functions import *
 
 
-def main():
+if __name__ == '__main__':
 
     parser = ArgumentParser()
     parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
@@ -31,7 +21,7 @@ def main():
     # To read the data directory from the argument given
     user_path = config['user_path']
 
-    metadata = loadmat(args.metadata)['celebrityImageData'][0][0]
+    metadata = loadmat(config["metadata_file"])['celebrityImageData'][0][0]
     ages = [x[0] for x in metadata[0]]
     names = [x[0][0] for x in metadata[-1]]
 
@@ -50,16 +40,14 @@ def main():
     domainB = domainB[:N]
     print(f'Images in A {len(domainA)} and B {len(domainB)}')
 
-    domainA_dir = os.path.join(args.output_dir, 'trainA')
-    domainB_dir = os.path.join(args.output_dir, 'trainB')
+    domainA_dir = os.path.join(user_path + gan_input_images, 'trainA')
+    domainB_dir = os.path.join(user_path + gan_input_images, 'trainB')
 
     os.makedirs(domainA_dir, exist_ok=True)
     os.makedirs(domainB_dir, exist_ok=True)
 
     for imageA, imageB in zip(domainA, domainB):
-        shutil.copy(os.path.join(args.image_dir, imageA), os.path.join(domainA_dir, imageA))
-        shutil.copy(os.path.join(args.image_dir, imageB), os.path.join(domainB_dir, imageB))
-
-
-if __name__ == '__main__':
-    main()
+        if file_exists(os.path.join(user_path + clean_images_path, imageA)):
+            shutil.copy(os.path.join(user_path + clean_images_path, imageA), os.path.join(domainA_dir, imageA))
+        if file_exists(os.path.join(user_path + clean_images_path, imageB)):
+            shutil.copy(os.path.join(user_path + clean_images_path, imageB), os.path.join(domainB_dir, imageB))

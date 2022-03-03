@@ -1,5 +1,9 @@
 # Data configs
+# Only change this path and everything updates automatically
 user_path: '/Users/dimitriosmavrofrydis/Projects/Python/CACD_Project'
+
+metadata_file : '../config_files/celebrity2000_meta.mat'
+
 
 # Network Configs
 ngf: 32
