@@ -5,12 +5,15 @@ from PIL import Image
 from torch.utils.data import Dataset
 
 from torchvision import transforms
-
+import pandas as pd
 
 class ImagetoImageDataset(Dataset):
     def __init__(self, df, path_to_images):
-        self.image_A = df[(df['age'] >= 18) & (df['age'] <=30 )].reset_index(drop = True)
-        self.image_B = df[(df['age'] >=55)].reset_index(drop = True)
+
+        self.image_A = df[(df['age'] >= 1) & (df['age'] <=2)].reset_index(drop = True)
+        print(self.image_A)
+        self.image_B = df[(df['age'] >=4)].reset_index(drop = True)
+        print(self.image_B)
         self.path_to_images = path_to_images
 
         self.transforms =  torchvision.transforms.Compose([
@@ -22,7 +25,7 @@ class ImagetoImageDataset(Dataset):
         ])
 
     def __len__(self):
-        return min(len(self.imagesA), len(self.imagesB))
+        return min(len(self.image_A), len(self.image_B))
 
 
     def __getitem__(self, index):

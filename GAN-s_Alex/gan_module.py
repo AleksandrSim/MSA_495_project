@@ -8,7 +8,8 @@ from torchvision.utils import make_grid
 from simple_dataloader import ImagetoImageDataset
 from GAN_model import Generator, Discriminator
 import os
-path_to_images = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized'
+import pandas as pd
+path_to_images = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
 class AgingGAN(pl.LightningModule):
 
     def __init__(self):
@@ -125,7 +126,10 @@ class AgingGAN(pl.LightningModule):
         return [g_optim, d_optim], []
 
     def train_dataloader(self):
-        dataset = ImagetoImageDataset(os.path.split(os.getcwd())[0] + '/files/imageName_age.csv', path_to_images )
+        df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/train.txt', sep=' ')
+        df.columns = ['name', 'age']
+        print(df)
+        dataset = ImagetoImageDataset(df, path_to_images )
         return DataLoader(dataset,
                           batch_size=3,
                           shuffle=True)
