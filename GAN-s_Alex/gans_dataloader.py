@@ -11,7 +11,7 @@ import numpy as np
 class CACD(data.Dataset):
     def __init__(self, split="train", transforms=None, label_transforms=None):
         self.split = split
-        list_root = os.path.abspath("./files/GAN-s_Alex")
+        list_root = os.path.abspath("/Users/aleksandrsimonyan/Documents/GitHub/deep_learning_final/files/GAN_csv_files/")
         data_root = "/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized"
         self.condition128 = []
         full_one = np.ones((128, 128), dtype=np.float32)
@@ -143,3 +143,23 @@ class CACD(data.Dataset):
             return len(self.source_images)
 
 
+
+if __name__=="__main__":
+    transforms = torchvision.transforms.Compose([
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
+    ])
+    label_transforms=torchvision.transforms.Compose([
+        torchvision.transforms.ToTensor(),
+    ])
+    CACD_dataset=CACD(transforms,label_transforms)
+    train_loader = torch.utils.data.DataLoader(
+        dataset=CACD_dataset,
+        batch_size=32,
+        shuffle=True
+    )
+    for idx,\
+        (source_img_227,source_img_128,true_label_img,true_label_128,true_label_64,\
+               fake_label_64, true_label) in enumerate(train_loader):
+        print(true_label)
+        break
