@@ -9,6 +9,8 @@ gan_model_path = "/trained_models/gan_model/"
 gan_generated_images = "/output/gan_generated_images/"
 gan_input_images = "/input/gan_input_images/"
 
+metadata_file = '../config_files/celebrity2000_meta.mat'
+
 
 image_dimensions = (400, 400)
 

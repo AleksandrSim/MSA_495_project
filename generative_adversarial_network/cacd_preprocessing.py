@@ -21,7 +21,7 @@ if __name__ == '__main__':
     # To read the data directory from the argument given
     user_path = config['user_path']
 
-    metadata = loadmat(config["metadata_file"])['celebrityImageData'][0][0]
+    metadata = loadmat(metadata_file)['celebrityImageData'][0][0]
     ages = [x[0] for x in metadata[0]]
     names = [x[0][0] for x in metadata[-1]]
 

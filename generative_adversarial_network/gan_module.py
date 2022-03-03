@@ -3,6 +3,7 @@ import yaml
 from gan_model import *
 from global_variables import *
 
+
 class AgingGAN(pl.LightningModule):
 
     def __init__(self, hparams):
@@ -134,6 +135,7 @@ class AgingGAN(pl.LightningModule):
         path_to_B = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainB')
 
         dataset = ImagetoImageDataset(path_to_A, path_to_B, train_transform)
+
         return DataLoader(dataset,
                           batch_size=self.hparams['batch_size'],
                           num_workers=self.hparams['num_workers'],
