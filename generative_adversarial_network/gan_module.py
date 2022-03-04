@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 import yaml
 from gan_model import *
 from global_variables import *
+from helper_functions import *
 
 
 class AgingGAN(pl.LightningModule, ABC):
@@ -87,8 +88,14 @@ class AgingGAN(pl.LightningModule, ABC):
             return output
 
         if batch_idx % 10 == 0:
-            torch.save(self.genA2B.state_dict(), self.hparams["user_path"] + gan_model_path + "/A2B/" + str(batch_idx) + '.pth')
-            torch.save(self.genB2A.state_dict(), self.hparams["user_path"] + gan_model_path + "/B2A/" + str(batch_idx) + '.pth')
+            model_path_a = self.hparams["user_path"] + gan_model_path + "A2B/"
+            model_path_b = self.hparams["user_path"] + gan_model_path + "B2A/"
+
+            generate_dir_if_not_exists(model_path_a)
+            generate_dir_if_not_exists(model_path_b)
+
+            torch.save(self.genA2B.state_dict(), model_path_a + str(batch_idx) + '.pth')
+            torch.save(self.genB2A.state_dict(), model_path_b + str(batch_idx) + '.pth')
 
         if optimizer_idx == 1:
             # Real loss
