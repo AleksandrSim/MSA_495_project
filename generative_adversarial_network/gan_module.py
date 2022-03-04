@@ -151,8 +151,11 @@ class AgingGAN(pl.LightningModule, ABC):
 
         path_to_A = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainA')
         path_to_B = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainB')
+        path_to_C = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainC')
+        path_to_D = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainD')
+        path_to_E = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainE')
 
-        dataset = ImagetoImageDataset(path_to_A, path_to_B, train_transform)
+        dataset = ImagetoImageDataset(path_to_A, path_to_B, path_to_C, path_to_D, path_to_E, train_transform)
 
         return DataLoader(dataset,
                           batch_size=self.hparams['batch_size'],
