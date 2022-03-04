@@ -5,6 +5,7 @@ from helper_functions import *
 from gan_model import *
 from gan_module import *
 from global_variables import *
+from tensorboard import program
 
 parser = ArgumentParser()
 parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
@@ -19,6 +20,11 @@ if __name__ == '__main__':
 
     generate_dir_if_not_exists(config['user_path'] + gan_model_path)
     generate_dir_if_not_exists(config['user_path'] + gan_generated_images)
+
+    tb = program.TensorBoard()
+    tb.configure(argv=[None, '--logdir', config['user_path'] + gan_generated_images])
+    url = tb.launch()
+    print(f"Tensorflow listening on {url}")
 
     model = AgingGAN(config)
     trainer = Trainer(max_epochs=config['epochs'], gpus=config['gpus'], auto_scale_batch_size='binsearch')

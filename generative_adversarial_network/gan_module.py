@@ -71,8 +71,6 @@ class AgingGAN(pl.LightningModule, ABC):
             self.real_B = real_B
             self.real_A = real_A
 
-            '''
-
             # Log to tb
             if batch_idx % 500 == 0:
                 self.logger.experiment.add_image('Real/A', make_grid(self.real_A, normalize=True, scale_each=True),
@@ -85,9 +83,12 @@ class AgingGAN(pl.LightningModule, ABC):
                 self.logger.experiment.add_image('Generated/B',
                                                  make_grid(self.generated_B, normalize=True, scale_each=True),
                                                  self.current_epoch)
-            '''
 
             return output
+
+        if batch_idx % 10 == 0:
+            torch.save(self.genA2B.state_dict(), self.hparams["user_path"] + gan_model_path + "/A2B/" + str(batch_idx) + '.pth')
+            torch.save(self.genB2A.state_dict(), self.hparams["user_path"] + gan_model_path + "/B2A/" + str(batch_idx) + '.pth')
 
         if optimizer_idx == 1:
             # Real loss
@@ -135,12 +136,11 @@ class AgingGAN(pl.LightningModule, ABC):
 
         train_transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            #transforms.Resize((self.hparams['img_size'] + 30, self.hparams['img_size'] + 30)),
-            #transforms.RandomCrop(self.hparams['img_size']),
+            transforms.Resize((self.hparams['img_size'] + 30, self.hparams['img_size'] + 30)),
+            transforms.RandomCrop(self.hparams['img_size']),
             transforms.ToTensor(),
             transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
-
 
         path_to_A = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainA')
         path_to_B = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainB')
