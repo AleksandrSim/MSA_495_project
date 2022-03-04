@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 import yaml
 from gan_model import *
 from global_variables import *
+from helper_functions import *
 
 
 class AgingGAN(pl.LightningModule, ABC):
@@ -71,8 +72,6 @@ class AgingGAN(pl.LightningModule, ABC):
             self.real_B = real_B
             self.real_A = real_A
 
-            '''
-
             # Log to tb
             if batch_idx % 500 == 0:
                 self.logger.experiment.add_image('Real/A', make_grid(self.real_A, normalize=True, scale_each=True),
@@ -85,9 +84,18 @@ class AgingGAN(pl.LightningModule, ABC):
                 self.logger.experiment.add_image('Generated/B',
                                                  make_grid(self.generated_B, normalize=True, scale_each=True),
                                                  self.current_epoch)
-            '''
 
             return output
+
+        if batch_idx % 10 == 0:
+            model_path_a = self.hparams["user_path"] + gan_model_path + "A2B/"
+            model_path_b = self.hparams["user_path"] + gan_model_path + "B2A/"
+
+            generate_dir_if_not_exists(model_path_a)
+            generate_dir_if_not_exists(model_path_b)
+
+            torch.save(self.genA2B.state_dict(), model_path_a + str(batch_idx) + '.pth')
+            torch.save(self.genB2A.state_dict(), model_path_b + str(batch_idx) + '.pth')
 
         if optimizer_idx == 1:
             # Real loss
@@ -135,17 +143,19 @@ class AgingGAN(pl.LightningModule, ABC):
 
         train_transform = transforms.Compose([
             transforms.RandomHorizontalFlip(),
-            #transforms.Resize((self.hparams['img_size'] + 30, self.hparams['img_size'] + 30)),
-            #transforms.RandomCrop(self.hparams['img_size']),
+            transforms.Resize((self.hparams['img_size'] + 30, self.hparams['img_size'] + 30)),
+            transforms.RandomCrop(self.hparams['img_size']),
             transforms.ToTensor(),
             transforms.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])
 
-
         path_to_A = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainA')
         path_to_B = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainB')
+        path_to_C = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainC')
+        path_to_D = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainD')
+        path_to_E = os.path.join(self.hparams["user_path"] + gan_input_images, 'trainE')
 
-        dataset = ImagetoImageDataset(path_to_A, path_to_B, train_transform)
+        dataset = ImagetoImageDataset(path_to_A, path_to_B, path_to_C, path_to_D, path_to_E, train_transform)
 
         return DataLoader(dataset,
                           batch_size=self.hparams['batch_size'],

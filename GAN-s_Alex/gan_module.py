@@ -96,9 +96,10 @@ class AgingGAN(pl.LightningModule):
           #                                       make_grid(self.generated_B, normalize=True, scale_each=True),
            #                                      self.current_epoch)
             return output
+
         if batch_idx % 10== 0:
             torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/A2B' + str(batch_idx) + '.pth')
-            torch.save(self.genA2B.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/B2A' + str(batch_idx) + '.pth')
+            torch.save(self.genB2A.state_dict(), '/Users/aleksandrsimonyan/Desktop/models/B2A' + str(batch_idx) + '.pth')
 
 
         if optimizer_idx == 1:
