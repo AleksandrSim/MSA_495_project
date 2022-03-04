@@ -90,7 +90,28 @@ if __name__ == '__main__':
             loss_identity_B = criterion_identity(same_B, real_B) * 7
             same_A = genB2A(real_A)
             loss_identity_A = criterion_identity(same_A, real_A) * 7
+
+
+
+
+
+
+
+
             fake_B = genA2B(real_A)
+
+
+
+            if i %10 ==0:
+                read = (real_A.squeeze().permute(1, 2, 0).numpy() + 1.0) / 2.0
+                plt.imshow(read)
+                plt.show()
+
+                aged_face = (fake_B.squeeze().permute(1, 2, 0).detach().numpy() + 1.0) / 2.0
+                plt.imshow(aged_face)
+                plt.show()
+
+
             pred_fake =disGB(fake_B)
             loss_GAN_A2B = criterion_GAN(pred_fake, torch.ones(pred_fake.shape).type_as(pred_fake)) * 2
 
