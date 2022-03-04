@@ -44,7 +44,7 @@ class AgingGAN(pl.LightningModule):
 
             # GAN loss
             fake_B = self.genA2B(real_A)
-            if batch_idx %5 ==0:
+            if batch_idx %30 ==0:
                 read = (real_A.squeeze().permute(1, 2, 0).numpy() + 1.0) / 2.0
                 plt.imshow(read)
                 plt.show()
