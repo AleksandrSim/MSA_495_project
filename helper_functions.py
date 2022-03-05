@@ -12,8 +12,6 @@ import boto3
 import os
 import boto3
 
-access = 'AKIA6IOLSKZVXLOYNYGW'
-secret_access_key = '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'
 
 
 def generate_dir_if_not_exists(directory):
