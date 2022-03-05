@@ -14,6 +14,8 @@ from torch.autograd import Variable
 import matplotlib.pyplot as plt
 import random
 
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 criterion_GAN = torch.nn.MSELoss()
 criterion_cycle = torch.nn.L1Loss()
 criterion_identity = torch.nn.L1Loss()
@@ -88,6 +90,9 @@ if __name__ == '__main__':
     for epoch in range(10):
         for i, batch in enumerate(dataset):
             real_A, real_B= batch
+            real_A, real_B = real_A.to(device),real_B.to(device)
+
+
             same_B = genA2B(real_B)
             g_optim.zero_grad()
             loss_identity_B = criterion_identity(same_B, real_B) * 7
