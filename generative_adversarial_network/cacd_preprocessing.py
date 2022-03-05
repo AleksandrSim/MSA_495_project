@@ -10,7 +10,8 @@ import numpy as np
 
 
 def copy_images_to_path(domain, image, user_path):
-    if file_exists(os.path.join(user_path + clean_images_path, image)) and not file_exists(os.path.join(domain, image)):
+    if file_exists(os.path.join(user_path + clean_images_path, image)) and not file_exists(
+            os.path.join(domain, image)):
         shutil.copy(os.path.join(user_path + clean_images_path, image), os.path.join(domain, image))
 
 
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     numpy_ages_array = np.array(ages)
 
     min_age = np.min(numpy_ages_array)
-    max_age = np.min(numpy_ages_array)
+    max_age = np.max(numpy_ages_array)
 
     ages_to_keep_a = [x for x in range(min_age, 20)]
     ages_to_keep_b = [x for x in range(20, 30)]
@@ -70,13 +71,14 @@ if __name__ == '__main__':
     N = min(len(domainA), len(domainB), len(domainC), len(domainD), len(domainE))
     domainA = domainA[:N]
     domainB = domainB[:N]
-    print(f'Images in A -> {len(domainA)}, -> B {len(domainB)}, -> C {len(domainC)}, -> D {len(domainD)}, -> E {len(domainE)}')
+    print(
+        f'Images in A -> {len(domainA)}, -> B {len(domainB)}, -> C {len(domainC)}, -> D {len(domainD)}, -> E {len(domainE)}')
 
-    domainA_dir = os.path.join(user_path + gan_input_images, 'trainA')
-    domainB_dir = os.path.join(user_path + gan_input_images, 'trainB')
-    domainC_dir = os.path.join(user_path + gan_input_images, 'trainC')
-    domainD_dir = os.path.join(user_path + gan_input_images, 'trainD')
-    domainE_dir = os.path.join(user_path + gan_input_images, 'trainE')
+    domainA_dir = os.path.join(gan_input_images, 'trainA')
+    domainB_dir = os.path.join(gan_input_images, 'trainB')
+    domainC_dir = os.path.join(gan_input_images, 'trainC')
+    domainD_dir = os.path.join(gan_input_images, 'trainD')
+    domainE_dir = os.path.join(gan_input_images, 'trainE')
 
     generate_dir_if_not_exists(domainA_dir)
     generate_dir_if_not_exists(domainB_dir)

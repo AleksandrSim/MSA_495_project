@@ -1,6 +1,6 @@
 # Data configs
 # Only change this path and everything updates automatically
-user_path: '/Users/dimitriosmavrofridis/Projects/Python/CACD_Project'
+user_path: '/Users/dimitriosmavrofrydis/Projects/Python/CACD_Project'
 
 # Network Configs
 ngf: 32
