@@ -1,5 +1,6 @@
 import itertools
 
+import numpy as np
 import pytorch_lightning as pl
 import torch
 import torch.nn.functional as F
@@ -72,16 +73,18 @@ if __name__ == '__main__':
     path_to_images = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
     df.columns = ['name', 'age']
 
+
+    BATCH_SIZE = 3
     dataset = ImagetoImageDataset(df, path_to_images)
     dataset = DataLoader(dataset,
-               batch_size=1,
+               batch_size=BATCH_SIZE,
                shuffle=True, num_workers=8)
 
     fake_A_buffer = ReplayBuffer()
     fake_B_buffer = ReplayBuffer()
 
-    target_real = Variable(torch.Tensor(1).fill_(1.0), requires_grad=False)
-    target_fake = Variable(torch.Tensor(1).fill_(0.0), requires_grad=False)
+    target_real = Variable(torch.Tensor(BATCH_SIZE).fill_(1.0), requires_grad=False)
+    target_fake = Variable(torch.Tensor(BATCH_SIZE).fill_(0.0), requires_grad=False)
     for epoch in range(10):
         for i, batch in enumerate(dataset):
             real_A, real_B= batch
@@ -103,14 +106,29 @@ if __name__ == '__main__':
 
 
             if i %10 ==0:
+                test_image = np.transpose(real_A[0].squeeze().detach().numpy(), [1,2,0])
+                plt.imshow(test_image)
+                plt.show()
+
+
+                plt.imshow(test_image)
+                aged_face = np.transpose(fake_B[0].squeeze().detach().numpy(), [1,2,0])
+                plt.imshow(aged_face)
+                plt.show()
+
+
+                '''
+                print('test_image')
+                print(test_image.shape)
                 read = (real_A.squeeze().permute(1, 2, 0).numpy() + 1.0) / 2.0
+
                 plt.imshow(read)
                 plt.show()
 
                 aged_face = (fake_B.squeeze().permute(1, 2, 0).detach().numpy() + 1.0) / 2.0
                 plt.imshow(aged_face)
                 plt.show()
-
+'''''
 
             pred_fake =disGB(fake_B)
             loss_GAN_A2B = criterion_GAN(pred_fake, torch.ones(pred_fake.shape).type_as(pred_fake)) * 2
