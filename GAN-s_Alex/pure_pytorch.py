@@ -1,21 +1,39 @@
 import itertools
 
 import numpy as np
-import pytorch_lightning as pl
+import os
+
+
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid
 from simple_dataloader import ImagetoImageDataset
 from GAN_model import Generator, Discriminator
-import os
 import pandas as pd
 from torch.autograd import Variable
 import matplotlib.pyplot as plt
 import random
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+
+
+
+
+
+
+
+
+
+
+cuda = torch.cuda.is_available()
+device = torch.device('cuda')
+
+
+
+
 criterion_GAN = torch.nn.MSELoss()
 criterion_cycle = torch.nn.L1Loss()
 criterion_identity = torch.nn.L1Loss()
@@ -44,12 +62,26 @@ class ReplayBuffer():
 
 
 if __name__ == '__main__':
+
+
+
     criterion_GAN = torch.nn.MSELoss()
 
     genA2B = Generator(32, n_residual_blocks=9)
     genB2A = Generator(32, n_residual_blocks=9)
+
+
     disGA = Discriminator(32)
     disGB = Discriminator(32)
+    if torch.cuda.is_available():
+        disGA = disGA.to(device)
+        disGB = disGB.to(device)
+        genA2B = genA2B.to(device)
+        genB2A = genA2B.to(device)
+        criterion_GAN = torch.nn.MSELoss().to(device)
+        criterion_cycle = torch.nn.L1Loss().to(device)
+        criterion_identity = torch.nn.L1Loss().to(device)
+
 
     # cache for generated images
     generated_A = None
@@ -71,26 +103,30 @@ if __name__ == '__main__':
     optimizer_D_A = torch.optim.Adam(disGA.parameters(), lr=0.0001, betas=(0.5, 0.999))
     optimizer_D_B = torch.optim.Adam(disGB.parameters(), lr=0.0001, betas=(0.5, 0.999))
 
-    df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/train.txt', sep=' ')
-    path_to_images = '/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/'
+    df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/gan_train.txt', sep=' ')
+    path_to_images = '/home/ubuntu/images_aws/'
     df.columns = ['name', 'age']
+
+    print(df)
 
 
     BATCH_SIZE = 3
     dataset = ImagetoImageDataset(df, path_to_images)
     dataset = DataLoader(dataset,
                batch_size=BATCH_SIZE,
-               shuffle=True, num_workers=8)
+               shuffle=True, num_workers=1)
 
     fake_A_buffer = ReplayBuffer()
     fake_B_buffer = ReplayBuffer()
 
-    target_real = Variable(torch.Tensor(BATCH_SIZE).fill_(1.0), requires_grad=False)
-    target_fake = Variable(torch.Tensor(BATCH_SIZE).fill_(0.0), requires_grad=False)
+    target_real = Variable(torch.Tensor(BATCH_SIZE).fill_(1.0), requires_grad=False).to(device)
+    target_fake = Variable(torch.Tensor(BATCH_SIZE).fill_(0.0), requires_grad=False).to(device)
     for epoch in range(10):
         for i, batch in enumerate(dataset):
+
             real_A, real_B= batch
-            real_A, real_B = real_A.to(device),real_B.to(device)
+            real_A,real_B = real_A.to(device), real_B.to(device)
+            #real_A, real_B = real_A.to(''),real_B.to(devic)
 
 
             same_B = genA2B(real_B)
@@ -110,14 +146,14 @@ if __name__ == '__main__':
 
 
 
-            if i %10 ==0:
-                test_image = np.transpose(real_A[0].squeeze().detach().numpy(), [1,2,0])
+            if i %100 ==0:
+                test_image = np.transpose(real_A[0].cpu().squeeze().detach().numpy(), [1,2,0])
                 plt.imshow(test_image)
                 plt.show()
 
 
                 plt.imshow(test_image)
-                aged_face = np.transpose(fake_B[0].squeeze().detach().numpy(), [1,2,0])
+                aged_face = np.transpose(fake_B[0].cpu().squeeze().detach().numpy(), [1,2,0])
                 plt.imshow(aged_face)
                 plt.show()
 
@@ -162,7 +198,7 @@ if __name__ == '__main__':
 
             optimizer_D_A.zero_grad()
 
-            pred_real = disGA(real_A)
+            pred_real = disGA(real_A).to(device)
             loss_D_real = criterion_GAN(pred_real, target_real)
 
 
@@ -197,15 +233,17 @@ if __name__ == '__main__':
 
             optimizer_D_B.step()
 
+            if i %50 ==0:
+                print('EPOCH -------->' + str(epoch))
 
-
-
-            print('BATCH -------->' + str(i))
-            print(' g_loss -------->' + str(g_loss.item()))
-            print(' loss_D_B -------->' + str(loss_D_B.item()))
-            print(' loss_D_A -------->' + str(loss_D_A.item()))
-            print(' loss_cycle -------->' + str(loss_cycle_BAB.item()))
-
+                print('BATCH -------->' + str(i))
+                print(' g_loss -------->' + str(g_loss.item()))
+                print(' loss_D_B -------->' + str(loss_D_B.item()))
+                print(' loss_D_A -------->' + str(loss_D_A.item()))
+                print(' loss_cycle -------->' + str(loss_cycle_BAB.item()))
+            if i %500 ==1 :
+                torch.save(genA2B.state_dict(), '/home/ubuntu/MSA_495_project/models/A2B' + 'epoch'+ str(epoch) +'batch' +str(i) + '.pth')
+                torch.save(genB2A.state_dict(), '/home/ubuntu/MSA_495_project/models/B2A' +  'epoch'+ str(epoch) +'batch' + str(i) +'.pth')
 
 
 

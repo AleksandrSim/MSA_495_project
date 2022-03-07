@@ -7,6 +7,10 @@ from torchvision.utils import make_grid
 from gan_data import *
 
 
+device= torch.device('cuda') if torch.cuda.is_available() else 'cpu'
+print(device)
+
+
 class ResidualBlock(nn.Module):
     def __init__(self, in_features):
         super(ResidualBlock, self).__init__()

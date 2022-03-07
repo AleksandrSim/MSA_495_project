@@ -1,5 +1,10 @@
 import torchvision
 
+import torch
+
+import os
+
+print(os.getcwd())
 from PIL import Image
 from torch.utils.data import Dataset
 
@@ -9,9 +14,9 @@ import pandas as pd
 
 class ImagetoImageDataset(Dataset):
     def __init__(self, df, path_to_images):
-        self.image_A = df[(df['age'] >= 1) & (df['age'] <= 2)].reset_index(drop=True)
+        self.image_A = df[(df['age'] ==0)].reset_index(drop=True)
         print(self.image_A)
-        self.image_B = df[(df['age'] >= 4)].reset_index(drop=True)
+        self.image_B = df[(df['age'] ==1)].reset_index(drop=True)
         print(self.image_B)
         self.path_to_images = path_to_images
 
