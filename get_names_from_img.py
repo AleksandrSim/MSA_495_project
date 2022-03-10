@@ -19,11 +19,10 @@ def age_to_group(age):
 if __name__ == '__main__':
 
     # To read the data directory from the argument given
-    user_path = sys.argv[1]
 
     txt = []
 
-    for filename in os.listdir(user_path):
+    for filename in os.listdir(PATH_TO_IMAGES):
         if '.DS_Store' in filename:
             continue
         print(filename)

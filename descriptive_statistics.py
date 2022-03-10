@@ -1,8 +1,8 @@
 import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
-from main import *
 import seaborn as sns
+from global_variables import *
 
 sns.set()
 sns.set(rc={'figure.figsize': (29.7 / 2, 20.27 / 2)})
@@ -10,17 +10,7 @@ sns.set(rc={'figure.figsize': (29.7 / 2, 20.27 / 2)})
 sns.set(font_scale=1.9)
 
 
-def argumentParser():
-    parser = argparse.ArgumentParser(
-        description='path to the the dataset_of_images'
-    )
-    parser.add_argument('-i', '--input', required=True, help='path_to_the_dataset')
-    args = parser.parse_args()
-    return args
 
-
-dataset = argumentParser()
-path = dataset.input
 
 
 def group_age_decades(path='files/imageName_age.csv'):

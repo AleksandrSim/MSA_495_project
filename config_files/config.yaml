@@ -1,9 +1,6 @@
 # Data configs
 # Only change this path and everything updates automatically
-user_path: '/Users/dimitriosmavrofrydis/Projects/Python/CACD_Project'
 
-# Network Configs
-ngf: 32
 ndf: 32
 n_blocks: 9
 
@@ -18,7 +15,7 @@ weight_decay: 0.0001
 
 # Training configs:
 img_size: 400
-batch_size: 4
+batch_size: 3
 num_workers: 4
-epochs: 1
+epochs: 10
 gpus: 0

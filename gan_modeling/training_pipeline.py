@@ -5,31 +5,25 @@ import os
 
 
 import torch
-import torch.nn.functional as F
 from torch.utils.data import DataLoader
-from torchvision.utils import make_grid
-from simple_dataloader import ImagetoImageDataset
-from GAN_model import Generator, Discriminator
+from dataloader import ImagetoImageDataset
+from gan_architecture import Generator, Discriminator
 import pandas as pd
 from torch.autograd import Variable
 import matplotlib.pyplot as plt
 import random
+import argparse
+from argparse import ArgumentParser
+import yaml
+from global_variables  import *
+
+parser = ArgumentParser()
+parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
+
+EPOCH_SIZE = 10
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-cuda = torch.cuda.is_available()
-device = torch.device('cuda')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 
@@ -62,6 +56,10 @@ class ReplayBuffer():
 
 
 if __name__ == '__main__':
+    args = parser.parse_args()
+    with open(args.config) as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+    print(config)
 
 
 
@@ -73,14 +71,14 @@ if __name__ == '__main__':
 
     disGA = Discriminator(32)
     disGB = Discriminator(32)
-    if torch.cuda.is_available():
-        disGA = disGA.to(device)
-        disGB = disGB.to(device)
-        genA2B = genA2B.to(device)
-        genB2A = genA2B.to(device)
-        criterion_GAN = torch.nn.MSELoss().to(device)
-        criterion_cycle = torch.nn.L1Loss().to(device)
-        criterion_identity = torch.nn.L1Loss().to(device)
+
+    disGA = disGA.to(device)
+    disGB = disGB.to(device)
+    genA2B = genA2B.to(device)
+    genB2A = genA2B.to(device)
+    criterion_GAN = torch.nn.MSELoss().to(device)
+    criterion_cycle = torch.nn.L1Loss().to(device)
+    criterion_identity = torch.nn.L1Loss().to(device)
 
 
     # cache for generated images
@@ -92,7 +90,7 @@ if __name__ == '__main__':
 
     g_optim = torch.optim.Adam(itertools.chain(genA2B.parameters(), genB2A.parameters()),
                                lr=0.0001, betas=(0.5, 0.999),
-                               weight_decay=0.0001)
+                               weight_decay=config['weight_decay'])
     '''
     d_optim = torch.optim.Adam(itertools.chain(disGA.parameters(),
                                                disGB.parameters()),
@@ -100,18 +98,17 @@ if __name__ == '__main__':
                                betas=(0.5, 0.999),
                                weight_decay=0.0001)
 '''
-    optimizer_D_A = torch.optim.Adam(disGA.parameters(), lr=0.0001, betas=(0.5, 0.999))
-    optimizer_D_B = torch.optim.Adam(disGB.parameters(), lr=0.0001, betas=(0.5, 0.999))
+    optimizer_D_A = torch.optim.Adam(disGA.parameters(), config['lr'], betas=(0.5, 0.999))
+    optimizer_D_B = torch.optim.Adam(disGB.parameters(), config['lr'], betas=(0.5, 0.999))
 
     df = pd.read_csv(os.path.split(os.getcwd())[0] + '/files/gan_train.txt', sep=' ')
-    path_to_images = '/home/ubuntu/images_aws/'
     df.columns = ['name', 'age']
 
     print(df)
 
 
-    BATCH_SIZE = 3
-    dataset = ImagetoImageDataset(df, path_to_images)
+    BATCH_SIZE = config['batch_size']
+    dataset = ImagetoImageDataset(df, PATH_TO_IMAGES)
     dataset = DataLoader(dataset,
                batch_size=BATCH_SIZE,
                shuffle=True, num_workers=1)
@@ -121,7 +118,7 @@ if __name__ == '__main__':
 
     target_real = Variable(torch.Tensor(BATCH_SIZE).fill_(1.0), requires_grad=False).to(device)
     target_fake = Variable(torch.Tensor(BATCH_SIZE).fill_(0.0), requires_grad=False).to(device)
-    for epoch in range(10):
+    for epoch in range(config['epochs']):
         for i, batch in enumerate(dataset):
 
             real_A, real_B= batch
@@ -146,30 +143,6 @@ if __name__ == '__main__':
 
 
 
-            if i %100 ==0:
-                test_image = np.transpose(real_A[0].cpu().squeeze().detach().numpy(), [1,2,0])
-                plt.imshow(test_image)
-                plt.show()
-
-
-                plt.imshow(test_image)
-                aged_face = np.transpose(fake_B[0].cpu().squeeze().detach().numpy(), [1,2,0])
-                plt.imshow(aged_face)
-                plt.show()
-
-
-                '''
-                print('test_image')
-                print(test_image.shape)
-                read = (real_A.squeeze().permute(1, 2, 0).numpy() + 1.0) / 2.0
-
-                plt.imshow(read)
-                plt.show()
-
-                aged_face = (fake_B.squeeze().permute(1, 2, 0).detach().numpy() + 1.0) / 2.0
-                plt.imshow(aged_face)
-                plt.show()
-'''''
 
             pred_fake =disGB(fake_B)
             loss_GAN_A2B = criterion_GAN(pred_fake, torch.ones(pred_fake.shape).type_as(pred_fake)) * 2
@@ -177,6 +150,20 @@ if __name__ == '__main__':
             fake_A = genB2A(real_B)
             pred_fake = disGA(fake_A)
             loss_GAN_B2A = criterion_identity(pred_fake, torch.ones(pred_fake.shape).type_as(pred_fake)) * 2
+
+
+            if i %100 ==0:
+                test_image = np.transpose(real_B[0].cpu().squeeze().detach().numpy(), [1,2,0])
+                plt.imshow(test_image)
+                plt.show()
+
+
+                plt.imshow(test_image)
+                aged_face = np.transpose(fake_A[0].cpu().squeeze().detach().numpy(), [1,2,0])
+                plt.imshow(aged_face)
+                plt.show()
+
+
 
 
 
@@ -241,10 +228,6 @@ if __name__ == '__main__':
                 print(' loss_D_B -------->' + str(loss_D_B.item()))
                 print(' loss_D_A -------->' + str(loss_D_A.item()))
                 print(' loss_cycle -------->' + str(loss_cycle_BAB.item()))
-            if i %500 ==1 :
-                torch.save(genA2B.state_dict(), '/home/ubuntu/MSA_495_project/models/A2B' + 'epoch'+ str(epoch) +'batch' +str(i) + '.pth')
-                torch.save(genB2A.state_dict(), '/home/ubuntu/MSA_495_project/models/B2A' +  'epoch'+ str(epoch) +'batch' + str(i) +'.pth')
-
 
 
 

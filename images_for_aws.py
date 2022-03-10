@@ -3,6 +3,8 @@ import sys
 from global_variables import *
 import pandas as pd
 from PIL import Image
+
+
 def age_to_group(age):
     if age >= 18 and age<30:
         return 0
@@ -19,7 +21,7 @@ if __name__ == '__main__':
 
     txt = []
 
-    for filename in os.listdir('/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized'):
+    for filename in os.listdir(PATH_TO_IMAGES):
         if '.DS_Store' in filename:
             continue
         print(filename)
@@ -38,7 +40,8 @@ if __name__ == '__main__':
 
 
     for index in range(len(df['name'])):
-        img = Image.open('/Users/aleksandrsimonyan/Desktop/cross_age_dataset_cleaned_and_resized/' +df['name'][index])
+        img = Image.open(PATH_TO_IMAGES +df['name'][index])
         img.save('/Users/aleksandrsimonyan/Desktop/images_aws/' + df['name'][index])
+        #change local path if needed
 
 
