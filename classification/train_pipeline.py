@@ -6,12 +6,11 @@ from torch import nn
 from dataloader import BinaryClass
 from torch.utils.data import DataLoader
 import numpy as np
-
+from argparse import ArgumentParser
 import prepare_data_training
-from helper_functions import *
 import os
 
-
+from global_variables import *
 
 if __name__ == '__main__':
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
@@ -25,7 +24,6 @@ if __name__ == '__main__':
     print(config)
 
     # To read the data directory from the argument given
-    user_path = config['user_path']
 
     #generate_dir_if_not_exists( + classification_class_model_path)
     train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt', class_2=True)
@@ -35,9 +33,9 @@ if __name__ == '__main__':
     weights_to_class = torch.Tensor([0.3676872403338698, 0.6323127596661302])
     criterion = nn.CrossEntropyLoss(weight=weights_to_class)
     optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
-    dataset = BinaryClass(train, user_path,train=True)
+    dataset = BinaryClass(train, PATH_TO_IMAGES,train=True)
     dataset = torch.utils.data.DataLoader(dataset, batch_size=100)
-    val_dataset = BinaryClass(valid, user_path,train=False)
+    val_dataset = BinaryClass(valid, PATH_TO_IMAGES,train=False)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
     overall_loss = []
 

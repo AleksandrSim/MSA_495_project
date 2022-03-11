@@ -9,7 +9,6 @@ from torch.utils.data import DataLoader
 import numpy as np
 import torchvision
 import sys
-from helper_functions import *
 from sklearn.model_selection import train_test_split
 import prepare_data_training
 from global_variables import *
