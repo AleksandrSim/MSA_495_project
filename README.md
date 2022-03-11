@@ -22,7 +22,7 @@ We have achieved decent results. After 5 epochs of training we have achieved fol
 
 
 
-![young original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/original_image.jpg) ![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/generated_image.jpg)
+![young original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/unnamed%20(1).png) ![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/unnamed%20(2).png)
 
 
 
