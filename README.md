@@ -7,5 +7,11 @@ To identify the best archichture suitable for generating synthetic images, we co
 Once we have identified the architechture, we have created a Cycle Gan. The code for the Cycle Gan model and training can be found here [here](https://github.com/AleksandrSim/MSA_495_project/tree/main/gan_modeling)
 
 
-We have achieved decent results. After 5 epochs of training we have achieved following *resuts*
+We have achieved decent results. After 5 epochs of training we have achieved following results:
+
+
+# old to young
+
+
+![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/original_old.png)   &#8594.   ![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/young_generated.png)
 
