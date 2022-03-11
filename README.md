@@ -17,7 +17,7 @@ We have achieved decent results. After 5 epochs of training we have achieved fol
 
 
 
-**young to old **
+**young to old**
 
 
 
