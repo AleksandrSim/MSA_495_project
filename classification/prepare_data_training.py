@@ -1,10 +1,7 @@
-import os
 import pandas as pd
 import torch
 from torch import nn
-import os
-from global_variables import *
-from helper_functions import *
+
 import numpy as np
 import torchvision
 from sklearn.model_selection import train_test_split

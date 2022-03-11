@@ -12,6 +12,7 @@ import sys
 from helper_functions import *
 from sklearn.model_selection import train_test_split
 import prepare_data_training
+from global_variables import *
 
 if __name__ == '__main__':
 
@@ -28,15 +29,14 @@ if __name__ == '__main__':
                                   nn.Linear(512, 2))
 
     # To read the data directory from the argument given
-    user_path = sys.argv[1]
-    user_provided_model = sys.argv[2]
+    PATH_TO_PRETRAINED_MODEL = 'alex/models/123.pth'
 
-    pretrained_model_path = user_path + classification_class_model_path + user_provided_model
+
 
     # Check all the models and the accuracy they produce:
 
-    if file_exists(pretrained_model_path):
-        states = torch.load(pretrained_model_path)
+    if file_exists(PATH_TO_PRETRAINED_MODEL):
+        states = torch.load(PATH_TO_PRETRAINED_MODEL)
     else:
         print(
             "Please check the file directory or the parameter name you provided for the pretrained-model and try again..")
@@ -48,13 +48,11 @@ if __name__ == '__main__':
 
     train, valid, weights = prepare_data_training.get_the_df(os.path.split(os.getcwd())[0] + '/files/train.txt',
                                                              class_2=True)
-    print(net)
-
     classes = [0, 1]
     correct_pred = {classname: 0 for classname in classes}
     total_pred = {classname: 0 for classname in classes}
 
-    val_dataset = BinaryClass(valid, user_path + clean_images_path, train=False)
+    val_dataset = BinaryClass(valid, PATH_TO_IMAGES, train=False)
     val_dataset = torch.utils.data.DataLoader(val_dataset, batch_size=100)
 
     # again no gradients needed

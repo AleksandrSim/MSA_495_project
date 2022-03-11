@@ -1,20 +1,13 @@
-import sys
-from argparse import ArgumentParser
 
-import pandas as pd
 import torch
 import yaml
 from torch import nn
-import os
-from global_variables import *
+
 from dataloader import BinaryClass
-from model import Simple, Medium, AgeAlexNet
 from torch.utils.data import DataLoader
 import numpy as np
-import torchvision
-from sklearn.model_selection import train_test_split
+
 import prepare_data_training
-from global_variables import *
 from helper_functions import *
 import os
 
@@ -22,10 +15,6 @@ import os
 
 if __name__ == '__main__':
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    print(os.listdir(('home/')))
-
-
-
     parser = ArgumentParser()
     parser.add_argument('--config', default='../config_files/config.yaml', help='Config .yaml file to use for training')
 
