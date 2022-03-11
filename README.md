@@ -10,8 +10,8 @@ Once we have identified the architechture, we have created a Cycle Gan. The code
 We have achieved decent results. After 5 epochs of training we have achieved following results:
 
 
-# old to young
+** old to young **
 
 
-![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/original_old.png)   &#8594.   ![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/young_generated.png)
+![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/original_old.png)   &#8594   ![old original](https://github.com/AleksandrSim/MSA_495_project/blob/main/files/young_generated.png)
 
